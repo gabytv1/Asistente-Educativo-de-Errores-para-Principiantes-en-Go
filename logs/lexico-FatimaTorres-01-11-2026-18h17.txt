@@ -1,0 +1,62 @@
+==============================================================================
+ANÁLISIS LÉXICO - Asistente Educativo de Errores para Go
+==============================================================================
+Desarrollador : Fátima Torres
+Archivo       : errores/error_fatima.go
+Fecha y hora  : 01-11-2026 18:17
+==============================================================================
+
+TOKENS RECONOCIDOS
+LÍNEA  COL.  TOKEN           LEXEMA
+------------------------------------------------------------------------------
+1      1     PACKAGE         package
+1      9     ID              main
+1      13    NEWLINE         \n
+3      1     IMPORT          import
+3      8     STRING_VALUE    "fmt"
+3      13    NEWLINE         \n
+7      1     FUNC            func
+7      6     ID              main
+7      10    LPAREN          (
+7      11    RPAREN          )
+7      13    LBRACE          {
+8      2     VAR             var
+8      6     ID              edad
+8      11    TYPE_INT        int
+8      15    ASSIGN          =
+8      17    INTEGER_VALUE   20
+8      19    NEWLINE         \n
+9      2     ID              fmt
+9      5     DOT             .
+9      6     ID              Println
+9      13    LPAREN          (
+9      14    ID              edad
+9      18    RPAREN          )
+9      19    NEWLINE         \n
+
+ERRORES LÉXICOS
+------------------------------------------------------------------------------
+[L4] Error léxico [línea 10, col. 2]: el comentario iniciado con /* no se cierra. Sugerencia: agrega */ al final del comentario.
+
+RESUMEN
+------------------------------------------------------------------------------
+Total de tokens reconocidos : 24
+Tipos de token distintos    : 14
+Errores léxicos             : 1
+Resultado                   : CON ERRORES
+
+Frecuencia por tipo de token:
+  ASSIGN          1
+  DOT             1
+  FUNC            1
+  ID              6
+  IMPORT          1
+  INTEGER_VALUE   1
+  LBRACE          1
+  LPAREN          2
+  NEWLINE         4
+  PACKAGE         1
+  RPAREN          2
+  STRING_VALUE    1
+  TYPE_INT        1
+  VAR             1
