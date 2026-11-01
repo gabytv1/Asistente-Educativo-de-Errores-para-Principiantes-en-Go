@@ -38,6 +38,5 @@ python -m unittest discover -s tests -v
 | **Infraestructura** | Repositorio y README; utilidades compartidas y clase del analizador (regla de NEWLINE) | `main.py`: generación de logs con el nombre y formato pedidos | Prueba integral con el programa de la propuesta (69 tokens) y verificación de los algoritmos con `go build` |
 | **unittest** | Pruebas de sus tokens | Pruebas de sus tokens | Pruebas de sus tokens |
 | **Algoritmo y errores** | `algoritmo1.go`, `error_fatima.go` | `algoritmo2.go`, `error_cesar.go` | `algoritmo3.go`, `error_elkin.go` |
-| **Documento** | Sección 8: Casos de Prueba y link del repositorio | Sección 8: Resultados (logs y errores) | Sección 9: Uso de IA; corregir el nombre del log en la sección 7 |
 | **Log propio** | Sí | Sí | Sí |
 
