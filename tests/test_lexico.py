@@ -57,5 +57,66 @@ class PruebasFatima(unittest.TestCase):
 # FIN aporte: Fátima Torres
 
 
+
+# ---------------------------------------------------------------------------
+# INICIO aporte: César Balladares
+# ---------------------------------------------------------------------------
+class PruebasCesar(unittest.TestCase):
+
+    def test_identificadores_y_literales(self):
+        tipos, errs = analizar('edad total_1 _aux 42 3.14 "Hola" true false')
+        self.assertEqual(tipos, ['ID', 'ID', 'ID', 'INTEGER_VALUE', 'FLOAT_VALUE',
+                                 'STRING_VALUE', 'TRUE', 'FALSE'])
+        self.assertEqual(errs, [])
+
+    def test_valores_numericos_se_convierten(self):
+        toks, _ = AnalizadorLexico().analizar('42 3.14')
+        self.assertEqual([t.value for t in toks], [42, 3.14])
+
+    def test_cadena_con_espacios_y_acentos(self):
+        tipos, errs = analizar('"Hola mundo, qué tal"')
+        self.assertEqual(tipos, ['STRING_VALUE'])
+        self.assertEqual(errs, [])
+
+    def test_nombres_de_tipo(self):
+        tipos, _ = analizar('int float64 string bool')
+        self.assertEqual(tipos, ['TYPE_INT', 'TYPE_FLOAT64', 'TYPE_STRING', 'TYPE_BOOL'])
+
+    def test_identificador_distingue_mayusculas(self):
+        tipos, _ = analizar('Edad edad For')
+        self.assertEqual(tipos, ['ID', 'ID', 'ID'])      # For no es la palabra for
+
+    def test_newline_despues_de_literal_o_id(self):
+        tipos, _ = analizar('42\nx\n"a"\n')
+        self.assertEqual(tipos, ['INTEGER_VALUE', 'NEWLINE', 'ID', 'NEWLINE',
+                                 'STRING_VALUE', 'NEWLINE'])
+
+    def test_error_L1_caracter_ilegal(self):
+        tipos, errs = analizar('x @ 3')
+        self.assertEqual([e['codigo'] for e in errs], ['L1'])
+        self.assertEqual((errs[0]['linea'], errs[0]['columna']), (1, 3))
+        self.assertIn("'@'", errs[0]['mensaje'])
+        self.assertEqual(tipos, ['ID', 'INTEGER_VALUE'])  # el análisis continúa
+
+    def test_error_L2_cadena_sin_cerrar(self):
+        tipos, errs = analizar('"Hola')
+        self.assertEqual([e['codigo'] for e in errs], ['L2'])
+        self.assertEqual((errs[0]['linea'], errs[0]['columna']), (1, 1))
+        self.assertEqual(tipos, [])
+
+    def test_error_L3_numero_mal_formado(self):
+        _, errs = analizar('12abc\n3.14.15')
+        self.assertEqual([e['codigo'] for e in errs], ['L3', 'L3'])
+        self.assertIn("'12abc'", errs[0]['mensaje'])
+        self.assertIn("'3.14.15'", errs[1]['mensaje'])
+        self.assertEqual((errs[1]['linea'], errs[1]['columna']), (2, 1))
+
+    def test_varios_errores_en_un_archivo(self):
+        _, errs = analizar('@\n"abc\n7x')
+        self.assertEqual([e['codigo'] for e in errs], ['L1', 'L2', 'L3'])
+# FIN aporte: César Balladares
+
+
+
 if __name__ == '__main__':
     unittest.main()
