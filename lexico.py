@@ -201,12 +201,57 @@ def t_error(t):
 # FIN aporte: César Balladares
 
 
-
 # ===========================================================================
 # 6. OPERADORES
 # ===========================================================================
+# INICIO aporte: Elkin Salazar
+reservadas.update({'map': 'MAP'})
 
-tokens_operadores = []
+tokens_operadores = [
+    'PLUS', 'MINUS', 'TIMES', 'DIVIDE', 'MOD',
+    'INC', 'DEC',
+    'ASSIGN', 'DECLARE', 'PLUS_ASSIGN', 'MINUS_ASSIGN',
+    'EQ', 'NE', 'LT', 'LE', 'GT', 'GE',
+    'AND', 'OR', 'NOT',
+    'ADDR',
+    'MAP',
+]
+
+
+# --- Error L5: '|' solo es válido como '||' ------------------------------
+def t_OPERADOR_INCOMPLETO(t):
+    r'\|(?!\|)'
+    registrar_error(
+        t, 'L5',
+        "el símbolo '|' solo es válido como '||'. "
+        "Sugerencia: usa || para la disyunción lógica.")
+
+
+# --- Operadores de dos caracteres (PLY los prueba antes que los de uno) ---
+t_INC = r'\+\+'
+t_DEC = r'--'
+t_DECLARE = r':='
+t_PLUS_ASSIGN = r'\+='
+t_MINUS_ASSIGN = r'-='
+t_EQ = r'=='
+t_NE = r'!='
+t_LE = r'<='
+t_GE = r'>='
+t_AND = r'&&'
+t_OR = r'\|\|'
+
+# --- Operadores de un carácter --------------------------------------------
+t_PLUS = r'\+'
+t_MINUS = r'-'
+t_TIMES = r'\*'
+t_DIVIDE = r'/'
+t_MOD = r'%'
+t_ASSIGN = r'='
+t_LT = r'<'
+t_GT = r'>'
+t_NOT = r'!'
+t_ADDR = r'&'
+# FIN aporte: Elkin Salazar
 
 
 # ===========================================================================
