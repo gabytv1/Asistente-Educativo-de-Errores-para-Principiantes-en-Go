@@ -1,0 +1,573 @@
+==============================================================================
+ANÁLISIS LÉXICO - Asistente Educativo de Errores para Go
+==============================================================================
+Desarrollador : Elkin Salazar
+Archivo       : algoritmos/algoritmo3.go
+Fecha y hora  : 01-11-2026 17:37
+==============================================================================
+
+TOKENS RECONOCIDOS
+LÍNEA  COL.  TOKEN           LEXEMA
+------------------------------------------------------------------------------
+1      1     PACKAGE         package
+1      9     ID              main
+1      13    NEWLINE         \n
+3      1     IMPORT          import
+3      8     STRING_VALUE    "fmt"
+3      13    NEWLINE         \n
+12     1     CONST           const
+12     7     ID              TIENDA
+12     14    ASSIGN          =
+12     16    STRING_VALUE    "Mini Tienda"
+12     29    NEWLINE         \n
+13     1     CONST           const
+13     7     ID              MINIMO
+13     14    ASSIGN          =
+13     16    INTEGER_VALUE   5
+13     17    NEWLINE         \n
+14     1     CONST           const
+14     7     ID              DESCUENTO
+14     17    ASSIGN          =
+14     19    INTEGER_VALUE   10
+14     21    NEWLINE         \n
+15     1     CONST           const
+15     7     ID              ENVIO
+15     13    ASSIGN          =
+15     15    INTEGER_VALUE   5
+15     16    NEWLINE         \n
+16     1     CONST           const
+16     7     ID              IVA
+16     11    ASSIGN          =
+16     13    FLOAT_VALUE     0.12
+16     17    NEWLINE         \n
+18     1     FUNC            func
+18     6     ID              mostrarMenu
+18     17    LPAREN          (
+18     18    ID              titulo
+18     25    TYPE_STRING     string
+18     31    RPAREN          )
+18     33    LBRACE          {
+19     2     ID              fmt
+19     5     DOT             .
+19     6     ID              Println
+19     13    LPAREN          (
+19     14    ID              titulo
+19     20    RPAREN          )
+19     21    NEWLINE         \n
+20     2     ID              fmt
+20     5     DOT             .
+20     6     ID              Println
+20     13    LPAREN          (
+20     14    STRING_VALUE    "1 = manzana, 2 = pera"
+20     37    RPAREN          )
+20     38    NEWLINE         \n
+21     1     RBRACE          }
+21     2     NEWLINE         \n
+23     1     FUNC            func
+23     6     ID              calcularTotal
+23     19    LPAREN          (
+23     20    ID              precio
+23     27    TYPE_INT        int
+23     30    COMMA           ,
+23     32    ID              cantidad
+23     41    TYPE_INT        int
+23     44    RPAREN          )
+23     46    TYPE_INT        int
+23     50    LBRACE          {
+24     2     ID              total
+24     8     DECLARE         :=
+24     11    ID              precio
+24     18    TIMES           *
+24     20    ID              cantidad
+24     28    NEWLINE         \n
+25     2     IF              if
+25     5     ID              cantidad
+25     14    GE              >=
+25     17    ID              MINIMO
+25     24    LBRACE          {
+26     3     ID              total
+26     9     MINUS_ASSIGN    -=
+26     12    ID              DESCUENTO
+26     21    NEWLINE         \n
+27     2     RBRACE          }
+27     3     NEWLINE         \n
+28     2     RETURN          return
+28     9     ID              total
+28     14    NEWLINE         \n
+29     1     RBRACE          }
+29     2     NEWLINE         \n
+31     1     FUNC            func
+31     6     ID              main
+31     10    LPAREN          (
+31     11    RPAREN          )
+31     13    LBRACE          {
+32     2     ID              mostrarMenu
+32     13    LPAREN          (
+32     14    ID              TIENDA
+32     20    RPAREN          )
+32     21    NEWLINE         \n
+34     2     ID              precios
+34     10    DECLARE         :=
+34     13    MAP             map
+34     16    LBRACKET        [
+34     17    TYPE_STRING     string
+34     23    RBRACKET        ]
+34     24    TYPE_INT        int
+34     27    LBRACE          {
+34     28    STRING_VALUE    "manzana"
+34     37    COLON           :
+34     39    INTEGER_VALUE   50
+34     41    COMMA           ,
+34     43    STRING_VALUE    "pera"
+34     49    COLON           :
+34     51    INTEGER_VALUE   75
+34     53    RBRACE          }
+34     54    NEWLINE         \n
+35     2     ID              stock
+35     8     DECLARE         :=
+35     11    MAP             map
+35     14    LBRACKET        [
+35     15    TYPE_STRING     string
+35     21    RBRACKET        ]
+35     22    TYPE_INT        int
+35     25    LBRACE          {
+35     26    STRING_VALUE    "manzana"
+35     35    COLON           :
+35     37    INTEGER_VALUE   20
+35     39    COMMA           ,
+35     41    STRING_VALUE    "pera"
+35     47    COLON           :
+35     49    INTEGER_VALUE   8
+35     50    RBRACE          }
+35     51    NEWLINE         \n
+37     2     VAR             var
+37     6     ID              opcion
+37     13    TYPE_INT        int
+37     16    NEWLINE         \n
+38     2     VAR             var
+38     6     ID              cantidad
+38     15    TYPE_INT        int
+38     18    NEWLINE         \n
+39     2     ID              fmt
+39     5     DOT             .
+39     6     ID              Scanln
+39     12    LPAREN          (
+39     13    ADDR            &
+39     14    ID              opcion
+39     20    RPAREN          )
+39     21    NEWLINE         \n
+40     2     ID              fmt
+40     5     DOT             .
+40     6     ID              Scanln
+40     12    LPAREN          (
+40     13    ADDR            &
+40     14    ID              cantidad
+40     22    RPAREN          )
+40     23    NEWLINE         \n
+42     2     IF              if
+42     5     ID              opcion
+42     12    LT              <
+42     14    INTEGER_VALUE   1
+42     16    OR              ||
+42     19    ID              opcion
+42     26    GT              >
+42     28    INTEGER_VALUE   2
+42     30    LBRACE          {
+43     3     ID              fmt
+43     6     DOT             .
+43     7     ID              Println
+43     14    LPAREN          (
+43     15    STRING_VALUE    "Opcion fuera del menu"
+43     38    RPAREN          )
+43     39    NEWLINE         \n
+44     2     RBRACE          }
+44     3     NEWLINE         \n
+46     2     VAR             var
+46     6     ID              nombre
+46     13    TYPE_STRING     string
+46     19    NEWLINE         \n
+47     2     SWITCH          switch
+47     9     ID              opcion
+47     16    LBRACE          {
+48     2     CASE            case
+48     7     INTEGER_VALUE   1
+48     8     COLON           :
+49     3     ID              nombre
+49     10    ASSIGN          =
+49     12    STRING_VALUE    "manzana"
+49     21    NEWLINE         \n
+50     2     CASE            case
+50     7     INTEGER_VALUE   2
+50     8     COLON           :
+51     3     ID              nombre
+51     10    ASSIGN          =
+51     12    STRING_VALUE    "pera"
+51     18    NEWLINE         \n
+52     2     DEFAULT         default
+52     9     COLON           :
+53     3     ID              nombre
+53     10    ASSIGN          =
+53     12    STRING_VALUE    "ninguno"
+53     21    NEWLINE         \n
+54     2     RBRACE          }
+54     3     NEWLINE         \n
+56     2     VAR             var
+56     6     ID              promo
+56     12    TYPE_BOOL       bool
+56     17    ASSIGN          =
+56     19    FALSE           false
+56     24    NEWLINE         \n
+57     2     IF              if
+57     5     ID              cantidad
+57     14    GE              >=
+57     17    ID              MINIMO
+57     24    LBRACE          {
+58     3     ID              promo
+58     9     ASSIGN          =
+58     11    TRUE            true
+58     15    NEWLINE         \n
+59     2     RBRACE          }
+59     3     NEWLINE         \n
+61     2     ID              valido
+61     9     DECLARE         :=
+61     12    ID              nombre
+61     19    NE              !=
+61     22    STRING_VALUE    "ninguno"
+61     32    AND             &&
+61     35    ID              cantidad
+61     44    GT              >
+61     46    INTEGER_VALUE   0
+61     48    AND             &&
+61     51    NOT             !
+61     52    LPAREN          (
+61     53    ID              cantidad
+61     62    GT              >
+61     64    ID              stock
+61     69    LBRACKET        [
+61     70    ID              nombre
+61     76    RBRACKET        ]
+61     77    RPAREN          )
+61     78    NEWLINE         \n
+63     2     IF              if
+63     5     ID              valido
+63     12    LBRACE          {
+64     3     ID              total
+64     9     DECLARE         :=
+64     12    ID              calcularTotal
+64     25    LPAREN          (
+64     26    ID              precios
+64     33    LBRACKET        [
+64     34    ID              nombre
+64     40    RBRACKET        ]
+64     41    COMMA           ,
+64     43    ID              cantidad
+64     51    RPAREN          )
+64     52    NEWLINE         \n
+65     3     ID              totalFinal
+65     14    DECLARE         :=
+65     17    ID              total
+65     23    PLUS            +
+65     25    ID              ENVIO
+65     30    NEWLINE         \n
+66     3     ID              ahorro
+66     10    DECLARE         :=
+66     13    ID              precios
+66     20    LBRACKET        [
+66     21    ID              nombre
+66     27    RBRACKET        ]
+66     28    TIMES           *
+66     29    ID              cantidad
+66     38    MINUS           -
+66     40    ID              total
+66     45    NEWLINE         \n
+67     3     ID              stock
+67     8     LBRACKET        [
+67     9     ID              nombre
+67     15    RBRACKET        ]
+67     17    MINUS_ASSIGN    -=
+67     20    ID              cantidad
+67     28    NEWLINE         \n
+68     3     IF              if
+68     6     ID              stock
+68     11    LBRACKET        [
+68     12    ID              nombre
+68     18    RBRACKET        ]
+68     20    LT              <
+68     22    ID              MINIMO
+68     29    LBRACE          {
+69     4     ID              stock
+69     9     LBRACKET        [
+69     10    ID              nombre
+69     16    RBRACKET        ]
+69     18    PLUS_ASSIGN     +=
+69     21    INTEGER_VALUE   10
+69     23    NEWLINE         \n
+70     3     RBRACE          }
+70     4     NEWLINE         \n
+71     3     ID              fmt
+71     6     DOT             .
+71     7     ID              Println
+71     14    LPAREN          (
+71     15    STRING_VALUE    "Producto:"
+71     26    COMMA           ,
+71     28    ID              nombre
+71     34    RPAREN          )
+71     35    NEWLINE         \n
+72     3     ID              fmt
+72     6     DOT             .
+72     7     ID              Println
+72     14    LPAREN          (
+72     15    STRING_VALUE    "Total con envio:"
+72     33    COMMA           ,
+72     35    ID              totalFinal
+72     45    RPAREN          )
+72     46    NEWLINE         \n
+73     3     ID              fmt
+73     6     DOT             .
+73     7     ID              Println
+73     14    LPAREN          (
+73     15    STRING_VALUE    "Ahorro:"
+73     24    COMMA           ,
+73     26    ID              ahorro
+73     32    RPAREN          )
+73     33    NEWLINE         \n
+74     3     ID              fmt
+74     6     DOT             .
+74     7     ID              Println
+74     14    LPAREN          (
+74     15    STRING_VALUE    "Hay promocion:"
+74     31    COMMA           ,
+74     33    ID              promo
+74     38    RPAREN          )
+74     39    NEWLINE         \n
+75     3     ID              fmt
+75     6     DOT             .
+75     7     ID              Println
+75     14    LPAREN          (
+75     15    STRING_VALUE    "Stock actual:"
+75     30    COMMA           ,
+75     32    ID              stock
+75     37    LBRACKET        [
+75     38    ID              nombre
+75     44    RBRACKET        ]
+75     45    RPAREN          )
+75     46    NEWLINE         \n
+76     2     RBRACE          }
+76     4     ELSE            else
+76     9     LBRACE          {
+77     3     ID              fmt
+77     6     DOT             .
+77     7     ID              Println
+77     14    LPAREN          (
+77     15    STRING_VALUE    "Opcion o cantidad no valida"
+77     44    RPAREN          )
+77     45    NEWLINE         \n
+78     2     RBRACE          }
+78     3     NEWLINE         \n
+80     2     ID              paquetes
+80     11    DECLARE         :=
+80     14    ID              cantidad
+80     23    DIVIDE          /
+80     25    INTEGER_VALUE   3
+80     26    NEWLINE         \n
+81     2     ID              sueltos
+81     10    DECLARE         :=
+81     13    ID              cantidad
+81     22    MOD             %
+81     24    INTEGER_VALUE   3
+81     25    NEWLINE         \n
+82     2     ID              fmt
+82     5     DOT             .
+82     6     ID              Println
+82     13    LPAREN          (
+82     14    STRING_VALUE    "Paquetes:"
+82     25    COMMA           ,
+82     27    ID              paquetes
+82     35    COMMA           ,
+82     37    STRING_VALUE    "Sueltos:"
+82     47    COMMA           ,
+82     49    ID              sueltos
+82     56    RPAREN          )
+82     57    NEWLINE         \n
+84     2     FOR             for
+84     6     ID              restantes
+84     16    DECLARE         :=
+84     19    ID              paquetes
+84     27    SEMICOLON       ;
+84     29    ID              restantes
+84     39    GT              >
+84     41    INTEGER_VALUE   0
+84     42    SEMICOLON       ;
+84     44    ID              restantes
+84     53    DEC             --
+84     56    LBRACE          {
+85     3     ID              fmt
+85     6     DOT             .
+85     7     ID              Println
+85     14    LPAREN          (
+85     15    STRING_VALUE    "Paquete listo"
+85     30    RPAREN          )
+85     31    NEWLINE         \n
+86     2     RBRACE          }
+86     3     NEWLINE         \n
+88     2     FOR             for
+88     6     ID              i
+88     8     DECLARE         :=
+88     11    INTEGER_VALUE   1
+88     12    SEMICOLON       ;
+88     14    ID              i
+88     16    LE              <=
+88     19    INTEGER_VALUE   3
+88     20    SEMICOLON       ;
+88     22    ID              i
+88     23    INC             ++
+88     26    LBRACE          {
+89     3     IF              if
+89     6     ID              i
+89     8     EQ              ==
+89     11    INTEGER_VALUE   2
+89     13    LBRACE          {
+90     4     CONTINUE        continue
+90     12    NEWLINE         \n
+91     3     RBRACE          }
+91     4     NEWLINE         \n
+92     3     ID              fmt
+92     6     DOT             .
+92     7     ID              Println
+92     14    LPAREN          (
+92     15    STRING_VALUE    "Revisando estante"
+92     34    COMMA           ,
+92     36    ID              i
+92     37    RPAREN          )
+92     38    NEWLINE         \n
+93     2     RBRACE          }
+93     3     NEWLINE         \n
+95     2     ID              pendientes
+95     13    DECLARE         :=
+95     16    ID              cantidad
+95     24    NEWLINE         \n
+96     2     ID              viajes
+96     9     DECLARE         :=
+96     12    INTEGER_VALUE   0
+96     13    NEWLINE         \n
+97     2     FOR             for
+97     6     ID              pendientes
+97     17    GT              >
+97     19    INTEGER_VALUE   0
+97     21    LBRACE          {
+98     3     ID              pendientes
+98     14    MINUS_ASSIGN    -=
+98     17    INTEGER_VALUE   3
+98     18    NEWLINE         \n
+99     3     ID              viajes
+99     9     INC             ++
+99     11    NEWLINE         \n
+100    3     IF              if
+100    6     ID              viajes
+100    13    EQ              ==
+100    16    INTEGER_VALUE   4
+100    18    LBRACE          {
+101    4     BREAK           break
+101    9     NEWLINE         \n
+102    3     RBRACE          }
+102    4     NEWLINE         \n
+103    2     RBRACE          }
+103    3     NEWLINE         \n
+104    2     ID              fmt
+104    5     DOT             .
+104    6     ID              Println
+104    13    LPAREN          (
+104    14    STRING_VALUE    "Viajes:"
+104    23    COMMA           ,
+104    25    ID              viajes
+104    31    RPAREN          )
+104    32    NEWLINE         \n
+106    2     VAR             var
+106    6     ID              porcentajeIva
+106    20    TYPE_FLOAT64    float64
+106    28    ASSIGN          =
+106    30    ID              IVA
+106    34    TIMES           *
+106    36    FLOAT_VALUE     100.0
+106    41    NEWLINE         \n
+107    2     ID              fmt
+107    5     DOT             .
+107    6     ID              Println
+107    13    LPAREN          (
+107    14    STRING_VALUE    "IVA (%):"
+107    24    COMMA           ,
+107    26    ID              porcentajeIva
+107    39    RPAREN          )
+107    40    NEWLINE         \n
+108    1     RBRACE          }
+108    2     NEWLINE         \n
+
+ERRORES LÉXICOS
+------------------------------------------------------------------------------
+(ninguno)
+
+RESUMEN
+------------------------------------------------------------------------------
+Total de tokens reconocidos : 492
+Tipos de token distintos    : 57
+Errores léxicos             : 0
+Resultado                   : SIN ERRORES
+
+Frecuencia por tipo de token:
+  ADDR            2
+  AND             2
+  ASSIGN          11
+  BREAK           1
+  CASE            2
+  COLON           7
+  COMMA           15
+  CONST           5
+  CONTINUE        1
+  DEC             1
+  DECLARE         13
+  DEFAULT         1
+  DIVIDE          1
+  DOT             16
+  ELSE            1
+  EQ              2
+  FALSE           1
+  FLOAT_VALUE     2
+  FOR             3
+  FUNC            3
+  GE              2
+  GT              5
+  ID              132
+  IF              7
+  IMPORT          1
+  INC             2
+  INTEGER_VALUE   23
+  LBRACE          17
+  LBRACKET        9
+  LE              1
+  LPAREN          22
+  LT              2
+  MAP             2
+  MINUS           1
+  MINUS_ASSIGN    3
+  MOD             1
+  NE              1
+  NEWLINE         66
+  NOT             1
+  OR              1
+  PACKAGE         1
+  PLUS            1
+  PLUS_ASSIGN     1
+  RBRACE          17
+  RBRACKET        9
+  RETURN          1
+  RPAREN          22
+  SEMICOLON       4
+  STRING_VALUE    24
+  SWITCH          1
+  TIMES           3
+  TRUE            1
+  TYPE_BOOL       1
+  TYPE_FLOAT64    1
+  TYPE_INT        7
+  TYPE_STRING     4
+  VAR             5

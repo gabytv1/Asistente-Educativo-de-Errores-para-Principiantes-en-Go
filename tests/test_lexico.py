@@ -117,6 +117,68 @@ class PruebasCesar(unittest.TestCase):
 # FIN aporte: César Balladares
 
 
+# ---------------------------------------------------------------------------
+# INICIO aporte: Elkin Salazar
+# ---------------------------------------------------------------------------
+class PruebasElkin(unittest.TestCase):
+
+    def test_operadores_de_dos_caracteres(self):
+        tipos, errs = analizar(':= == != <= >= && || ++ -- += -=')
+        self.assertEqual(tipos, ['DECLARE', 'EQ', 'NE', 'LE', 'GE', 'AND', 'OR',
+                                 'INC', 'DEC', 'PLUS_ASSIGN', 'MINUS_ASSIGN'])
+        self.assertEqual(errs, [])
+
+    def test_operadores_de_un_caracter(self):
+        tipos, errs = analizar('+ - * / % = < > ! &')
+        self.assertEqual(tipos, ['PLUS', 'MINUS', 'TIMES', 'DIVIDE', 'MOD', 'ASSIGN',
+                                 'LT', 'GT', 'NOT', 'ADDR'])
+        self.assertEqual(errs, [])
+
+    def test_dos_caracteres_no_se_separan(self):
+        tipos, _ = analizar('a:=b==c!=d<=e>=f')
+        self.assertEqual(tipos, ['ID', 'DECLARE', 'ID', 'EQ', 'ID', 'NE', 'ID',
+                                 'LE', 'ID', 'GE', 'ID'])
+
+    def test_division_no_se_confunde_con_comentario(self):
+        tipos, _ = analizar('a / b // resto es comentario')
+        self.assertEqual(tipos, ['ID', 'DIVIDE', 'ID'])
+
+    def test_map_es_palabra_reservada(self):
+        tipos, _ = analizar('map[string]int')
+        self.assertEqual(tipos, ['MAP', 'LBRACKET', 'TYPE_STRING', 'RBRACKET', 'TYPE_INT'])
+
+    def test_incremento_y_asignacion_compuesta(self):
+        tipos, _ = analizar('i++\ntotal += 5\nx -= 1\ny--')
+        self.assertEqual(tipos, ['ID', 'INC', 'NEWLINE', 'ID', 'PLUS_ASSIGN',
+                                 'INTEGER_VALUE', 'NEWLINE', 'ID', 'MINUS_ASSIGN',
+                                 'INTEGER_VALUE', 'NEWLINE', 'ID', 'DEC'])
+
+    def test_direccion_en_scanln(self):
+        tipos, _ = analizar('fmt.Scanln(&edad)')
+        self.assertEqual(tipos, ['ID', 'DOT', 'ID', 'LPAREN', 'ADDR', 'ID', 'RPAREN'])
+
+    def test_error_L5_operador_incompleto(self):
+        tipos, errs = analizar('if a | b {')
+        self.assertEqual([e['codigo'] for e in errs], ['L5'])
+        self.assertEqual((errs[0]['linea'], errs[0]['columna']), (1, 6))
+        self.assertIn("'||'", errs[0]['mensaje'])
+        self.assertNotIn('OR', tipos)
+
+    def test_or_valido_no_genera_error(self):
+        tipos, errs = analizar('a || b')
+        self.assertEqual(tipos, ['ID', 'OR', 'ID'])
+        self.assertEqual(errs, [])
+
+    def test_algoritmo3_usa_todos_mis_tokens(self):
+        ruta = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                            'algoritmos', 'algoritmo3.go')
+        with open(ruta, encoding='utf-8') as f:
+            toks, errs = AnalizadorLexico().analizar(f.read())
+        self.assertEqual(errs, [])
+        usados = {t.type for t in toks}
+        self.assertEqual(set(lexico.tokens_operadores) - usados, set())
+# FIN aporte: Elkin Salazar
+
 
 if __name__ == '__main__':
     unittest.main()
