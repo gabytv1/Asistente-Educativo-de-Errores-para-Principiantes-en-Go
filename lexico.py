@@ -131,11 +131,74 @@ t_DOT = r'\.'
 # ===========================================================================
 # 5. IDENTIFICADORES, LITERALES Y TIPOS
 # ===========================================================================
-tokens_literales = []
+# INICIO aporte: César Balladares
+reservadas_tipos = {
+    'true': 'TRUE',
+    'false': 'FALSE',
+    'int': 'TYPE_INT',
+    'float64': 'TYPE_FLOAT64',
+    'string': 'TYPE_STRING',
+    'bool': 'TYPE_BOOL',
+}
+reservadas.update(reservadas_tipos)
+
+tokens_literales = [
+    'ID', 'INTEGER_VALUE', 'FLOAT_VALUE', 'STRING_VALUE',
+] + list(reservadas_tipos.values())
 
 
+# --- Números ---------------------------------------------------------------
+def t_NUMERO_MAL_FORMADO(t):                   # Error L3
+    r'[0-9]+(?:\.[0-9]+){2,}[0-9A-Za-z_.]*|[0-9]+(?:\.[0-9]+)?[A-Za-z_][0-9A-Za-z_.]*'
+    registrar_error(
+        t, 'L3',
+        "el literal '%s' no es válido. Sugerencia: revisa que el número no "
+        "contenga letras ni más de un punto decimal." % t.value)
+
+
+def t_FLOAT_VALUE(t):
+    r'[0-9]+\.[0-9]+'
+    t.value = float(t.value)
+    return t
+
+
+def t_INTEGER_VALUE(t):
+    r'[0-9]+'
+    t.value = int(t.value)
+    return t
+
+
+# --- Cadenas ---------------------------------------------------------------
+def t_STRING_VALUE(t):
+    r'"[^"\n]*"'
+    return t
+
+
+def t_CADENA_SIN_CERRAR(t):                    # Error L2
+    r'"[^"\n]*'
+    registrar_error(
+        t, 'L2',
+        "la cadena de texto no tiene comilla de cierre. "
+        "Sugerencia: agrega \" al final de la cadena.")
+
+
+# --- Identificadores y palabras reservadas -------------------------------
+def t_ID(t):
+    r'[A-Za-z_][A-Za-z0-9_]*'
+    # Las palabras reservadas se reconocen antes que los identificadores.
+    t.type = reservadas.get(t.value, 'ID')
+    return t
+
+
+# --- Error L1: carácter ilegal -------------------------------------------
 def t_error(t):
+    registrar_error(
+        t, 'L1',
+        "el carácter '%s' no pertenece al subconjunto definido. "
+        "Sugerencia: elimínalo o reemplázalo por un operador válido."
+        % t.value[0])
     t.lexer.skip(1)
+# FIN aporte: César Balladares
 
 
 
