@@ -46,7 +46,6 @@ class PruebasFatima(unittest.TestCase):
         self.assertEqual((errs[0]['linea'], errs[0]['columna']), (2, 1))
         self.assertIn('no se cierra', errs[0]['mensaje'])
 
-    @unittest.skipUnless('ID' in lexico.tokens, 'Pendiente: t_ID de César')
     def test_palabras_reservadas_no_son_id(self):
         tipos, errs = analizar('package import func var const if else for '
                                'switch case default break continue return')
