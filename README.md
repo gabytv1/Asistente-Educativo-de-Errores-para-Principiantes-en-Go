@@ -14,12 +14,13 @@ Asistente para principiantes que analiza un subconjunto de Go (análisis léxico
 ## Estructura
 
 ```
-lexico.py            analizador léxico (ply.lex), organizado por tipo de token
-main.py              ejecuta el análisis sobre un archivo .go y genera el log
-algoritmos/          algoritmo1.go, algoritmo2.go, algoritmo3.go (uno por integrante)
-errores/             archivos con errores léxicos a propósito (L1 a L5)
-logs/                logs lexico-NombreApellido-DD-MM-AAAA-HHhMM.txt
-tests/               pruebas unittest
+lexico.py                  analizador léxico (ply.lex), organizado por tipo de token
+main.py                    ejecuta el análisis sobre un archivo .go y genera el log
+verificar_algoritmos.py    revisa los algoritmos: cobertura de tokens y compilación con Go
+algoritmos/                algoritmo1.go, algoritmo2.go, algoritmo3.go (uno por integrante)
+errores/                   archivos con errores léxicos a propósito (L1 a L5)
+logs/                      logs lexico-NombreApellido-DD-MM-AAAA-HHhMM.txt
+tests/                     pruebas unittest (tokens, log y prueba integral)
 ```
 
 ## Uso
@@ -40,3 +41,10 @@ python -m unittest discover -s tests -v
 | **Algoritmo y errores** | `algoritmo1.go`, `error_fatima.go` | `algoritmo2.go`, `error_cesar.go` | `algoritmo3.go`, `error_elkin.go` |
 | **Log propio** | Sí | Sí | Sí |
 
+## Checklist del Avance 1
+
+- [x] Fátima: tokens, clase del analizador, tests, algoritmo1.go, error_fatima.go
+- [x] César: tokens, main.py, tests, algoritmo2.go, error_cesar.go
+- [x] Elkin: tokens, tests, prueba integral, algoritmo3.go, error_elkin.go
+- [x] Logs de los tres en `logs/`
+- [x] Documento actualizado (secciones 8 y 9) con el link del repositorio
