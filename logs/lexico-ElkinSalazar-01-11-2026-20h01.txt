@@ -1,0 +1,88 @@
+==============================================================================
+ANÁLISIS LÉXICO - Asistente Educativo de Errores para Go
+==============================================================================
+Desarrollador : Elkin Salazar
+Archivo       : .\errores\error_elkin.go
+Fecha y hora  : 01-11-2026 20:01
+==============================================================================
+
+TOKENS RECONOCIDOS
+LÍNEA  COL.  TOKEN           LEXEMA
+------------------------------------------------------------------------------
+1      1     PACKAGE         package
+1      9     ID              main
+1      13    NEWLINE         \n
+3      1     IMPORT          import
+3      8     STRING_VALUE    "fmt"
+3      13    NEWLINE         \n
+7      1     FUNC            func
+7      6     ID              main
+7      10    LPAREN          (
+7      11    RPAREN          )
+7      13    LBRACE          {
+8      2     ID              a
+8      4     DECLARE         :=
+8      7     TRUE            true
+8      11    NEWLINE         \n
+9      2     ID              b
+9      4     DECLARE         :=
+9      7     FALSE           false
+9      12    NEWLINE         \n
+10     2     IF              if
+10     5     ID              a
+10     9     ID              b
+10     11    LBRACE          {
+11     3     ID              fmt
+11     6     DOT             .
+11     7     ID              Println
+11     14    LPAREN          (
+11     15    STRING_VALUE    "uno de los dos es verdadero"
+11     44    RPAREN          )
+11     45    NEWLINE         \n
+12     2     RBRACE          }
+12     3     NEWLINE         \n
+13     2     IF              if
+13     5     ID              a
+13     7     OR              ||
+13     10    ID              b
+13     12    LBRACE          {
+14     3     ID              fmt
+14     6     DOT             .
+14     7     ID              Println
+14     14    LPAREN          (
+14     15    STRING_VALUE    "esta linea si es valida"
+14     40    RPAREN          )
+14     41    NEWLINE         \n
+15     2     RBRACE          }
+15     3     NEWLINE         \n
+16     1     RBRACE          }
+16     2     NEWLINE         \n
+
+ERRORES LÉXICOS
+------------------------------------------------------------------------------
+[L5] Error léxico [línea 10, col. 7]: el símbolo '|' solo es válido como '||'. Sugerencia: usa || para la disyunción lógica.
+
+RESUMEN
+------------------------------------------------------------------------------
+Total de tokens reconocidos : 48
+Tipos de token distintos    : 16
+Errores léxicos             : 1
+Resultado                   : CON ERRORES
+
+Frecuencia por tipo de token:
+  DECLARE         2
+  DOT             2
+  FALSE           1
+  FUNC            1
+  ID              12
+  IF              2
+  IMPORT          1
+  LBRACE          3
+  LPAREN          3
+  NEWLINE         9
+  OR              1
+  PACKAGE         1
+  RBRACE          3
+  RPAREN          3
+  STRING_VALUE    3
+  TRUE            1
