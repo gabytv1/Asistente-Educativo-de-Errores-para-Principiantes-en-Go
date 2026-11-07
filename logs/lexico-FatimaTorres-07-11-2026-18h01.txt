@@ -1,0 +1,99 @@
+==============================================================================
+ANÁLISIS LÉXICO - Asistente Educativo de Errores para Go
+==============================================================================
+Desarrollador : Fátima Torres
+Archivo       : errores/error_fatima.go
+Fecha y hora  : 07-11-2026 18:01
+==============================================================================
+
+TOKENS RECONOCIDOS
+LÍNEA  COL.  TOKEN           LEXEMA
+------------------------------------------------------------------------------
+1      1     PACKAGE         package
+1      9     ID              main
+1      13    NEWLINE         \n
+3      1     IMPORT          import
+3      8     STRING_VALUE    "fmt"
+3      13    NEWLINE         \n
+7      1     FUNC            func
+7      6     ID              main
+7      10    LPAREN          (
+7      11    RPAREN          )
+7      13    LBRACE          {
+8      2     VAR             var
+8      6     ID              edad
+8      11    TYPE_INT        int
+8      15    ASSIGN          =
+8      17    INTEGER_VALUE   20
+8      19    NEWLINE         \n
+9      2     VAR             var
+9      6     ID              notas
+9      12    ASSIGN          =
+9      14    LBRACKET        [
+9      15    RBRACKET        ]
+9      16    TYPE_INT        int
+9      19    LBRACE          {
+9      20    INTEGER_VALUE   8
+9      21    COMMA           ,
+9      23    INTEGER_VALUE   9
+9      24    COMMA           ,
+9      26    INTEGER_VALUE   10
+9      28    RBRACE          }
+9      29    NEWLINE         \n
+10     2     FOR             for
+10     6     ID              i
+10     8     DECLARE         :=
+10     17    ID              notas
+10     23    LBRACE          {
+11     3     FMT             fmt
+11     6     DOT             .
+11     7     PRINTLN         Println
+11     14    LPAREN          (
+11     15    ID              i
+11     16    RPAREN          )
+11     17    NEWLINE         \n
+12     2     RBRACE          }
+12     3     NEWLINE         \n
+13     2     FMT             fmt
+13     5     DOT             .
+13     6     PRINTLN         Println
+13     13    LPAREN          (
+13     14    ID              edad
+13     18    RPAREN          )
+13     19    NEWLINE         \n
+
+ERRORES LÉXICOS
+------------------------------------------------------------------------------
+[L7] Error léxico [línea 10, col. 11]: la palabra 'range' es una palabra reservada de Go que no pertenece al subconjunto definido. Sugerencia: usa un for con inicio, condición y paso, por ejemplo for i := 0; i < 5; i++ {.
+[L4] Error léxico [línea 14, col. 2]: el comentario iniciado con /* no se cierra. Sugerencia: agrega */ al final del comentario.
+
+RESUMEN
+------------------------------------------------------------------------------
+Total de tokens reconocidos : 52
+Tipos de token distintos    : 22
+Errores léxicos             : 2
+Resultado                   : CON ERRORES
+
+Frecuencia por tipo de token:
+  ASSIGN          2
+  COMMA           2
+  DECLARE         1
+  DOT             2
+  FMT             2
+  FOR             1
+  FUNC            1
+  ID              8
+  IMPORT          1
+  INTEGER_VALUE   4
+  LBRACE          3
+  LBRACKET        1
+  LPAREN          3
+  NEWLINE         7
+  PACKAGE         1
+  PRINTLN         2
+  RBRACE          2
+  RBRACKET        1
+  RPAREN          3
+  STRING_VALUE    1
+  TYPE_INT        2
+  VAR             2

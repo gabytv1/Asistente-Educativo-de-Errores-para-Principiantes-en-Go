@@ -1,0 +1,448 @@
+==============================================================================
+ANÁLISIS LÉXICO - Asistente Educativo de Errores para Go
+==============================================================================
+Desarrollador : Fátima Torres
+Archivo       : algoritmos/algoritmo1.go
+Fecha y hora  : 07-11-2026 17:58
+==============================================================================
+
+TOKENS RECONOCIDOS
+LÍNEA  COL.  TOKEN           LEXEMA
+------------------------------------------------------------------------------
+1      1     PACKAGE         package
+1      9     ID              main
+1      13    NEWLINE         \n
+3      1     IMPORT          import
+3      8     STRING_VALUE    "fmt"
+3      13    NEWLINE         \n
+11     1     CONST           const
+11     7     ID              MINIMO
+11     14    ASSIGN          =
+11     16    FLOAT_VALUE     60.0
+11     20    NEWLINE         \n
+12     1     CONST           const
+12     7     ID              MATERIA
+12     15    ASSIGN          =
+12     17    STRING_VALUE    "Lenguajes de Programacion"
+12     44    NEWLINE         \n
+14     1     VAR             var
+14     5     ID              aprobadas
+14     15    TYPE_INT        int
+14     19    ASSIGN          =
+14     21    INTEGER_VALUE   0
+14     22    NEWLINE         \n
+15     1     VAR             var
+15     5     ID              activo
+15     12    TYPE_BOOL       bool
+15     17    ASSIGN          =
+15     19    TRUE            true
+15     23    NEWLINE         \n
+16     1     VAR             var
+16     5     ID              ajuste
+16     12    TYPE_FLOAT64    float64
+16     19    NEWLINE         \n
+18     1     FUNC            func
+18     6     ID              clasificar
+18     16    LPAREN          (
+18     17    ID              promedio
+18     26    TYPE_FLOAT64    float64
+18     33    RPAREN          )
+18     35    TYPE_STRING     string
+18     42    LBRACE          {
+19     2     IF              if
+19     5     ID              promedio
+19     14    GE              >=
+19     17    FLOAT_VALUE     90.0
+19     22    LBRACE          {
+20     3     RETURN          return
+20     10    STRING_VALUE    "Excelente"
+20     21    NEWLINE         \n
+21     2     RBRACE          }
+21     4     ELSE            else
+21     9     LBRACE          {
+22     3     IF              if
+22     6     ID              promedio
+22     15    GE              >=
+22     18    ID              MINIMO
+22     25    AND             &&
+22     28    NOT             !
+22     29    LPAREN          (
+22     30    ID              promedio
+22     39    GT              >
+22     41    FLOAT_VALUE     100.0
+22     46    RPAREN          )
+22     48    LBRACE          {
+23     4     RETURN          return
+23     11    STRING_VALUE    "Aprobado"
+23     21    NEWLINE         \n
+24     3     RBRACE          }
+24     4     NEWLINE         \n
+25     2     RBRACE          }
+25     3     NEWLINE         \n
+26     2     RETURN          return
+26     9     STRING_VALUE    "Reprobado"
+26     20    NEWLINE         \n
+27     1     RBRACE          }
+27     2     NEWLINE         \n
+29     1     FUNC            func
+29     6     ID              main
+29     10    LPAREN          (
+29     11    RPAREN          )
+29     13    LBRACE          {
+30     2     ID              notas
+30     8     DECLARE         :=
+30     11    LBRACKET        [
+30     12    INTEGER_VALUE   5
+30     13    RBRACKET        ]
+30     14    TYPE_FLOAT64    float64
+30     21    LBRACE          {
+30     22    FLOAT_VALUE     85.5
+30     26    COMMA           ,
+30     28    FLOAT_VALUE     92.0
+30     32    COMMA           ,
+30     34    FLOAT_VALUE     70.0
+30     38    COMMA           ,
+30     40    FLOAT_VALUE     55.5
+30     44    COMMA           ,
+30     46    FLOAT_VALUE     99.0
+30     50    RBRACE          }
+30     51    NEWLINE         \n
+31     2     VAR             var
+31     6     ID              suma
+31     11    TYPE_FLOAT64    float64
+31     19    ASSIGN          =
+31     21    FLOAT_VALUE     0.0
+31     24    NEWLINE         \n
+32     2     VAR             var
+32     6     ID              contador
+32     15    TYPE_INT        int
+32     18    NEWLINE         \n
+33     2     VAR             var
+33     6     ID              intentos
+33     15    TYPE_INT        int
+33     19    ASSIGN          =
+33     21    INTEGER_VALUE   3
+33     22    SEMICOLON       ;
+33     24    VAR             var
+33     28    ID              mensaje
+33     36    TYPE_STRING     string
+33     43    ASSIGN          =
+33     45    STRING_VALUE    "Fin del analisis"
+33     63    NEWLINE         \n
+35     2     FOR             for
+35     6     ID              i
+35     8     DECLARE         :=
+35     11    INTEGER_VALUE   0
+35     12    SEMICOLON       ;
+35     14    ID              i
+35     16    LT              <
+35     18    INTEGER_VALUE   5
+35     19    SEMICOLON       ;
+35     21    ID              i
+35     22    INC             ++
+35     25    LBRACE          {
+36     3     IF              if
+36     6     ID              notas
+36     11    LBRACKET        [
+36     12    ID              i
+36     13    RBRACKET        ]
+36     15    LT              <
+36     17    ID              MINIMO
+36     24    LBRACE          {
+37     4     CONTINUE        continue
+37     12    NEWLINE         \n
+38     3     RBRACE          }
+38     4     NEWLINE         \n
+39     3     ID              suma
+39     8     PLUS_ASSIGN     +=
+39     11    ID              notas
+39     16    LBRACKET        [
+39     17    ID              i
+39     18    RBRACKET        ]
+39     19    NEWLINE         \n
+40     3     ID              contador
+40     11    INC             ++
+40     13    NEWLINE         \n
+41     3     ID              aprobadas
+41     12    INC             ++
+41     14    NEWLINE         \n
+42     2     RBRACE          }
+42     3     NEWLINE         \n
+44     2     ID              promedio
+44     11    DECLARE         :=
+44     14    ID              suma
+44     19    DIVIDE          /
+44     21    FLOAT_VALUE     5.0
+44     24    NEWLINE         \n
+45     2     ID              estado
+45     9     DECLARE         :=
+45     12    ID              clasificar
+45     22    LPAREN          (
+45     23    ID              promedio
+45     31    RPAREN          )
+45     32    NEWLINE         \n
+46     2     FMT             fmt
+46     5     DOT             .
+46     6     PRINTLN         Println
+46     13    LPAREN          (
+46     14    ID              MATERIA
+46     21    COMMA           ,
+46     23    ID              estado
+46     29    COMMA           ,
+46     31    ID              aprobadas
+46     40    COMMA           ,
+46     42    ID              contador
+46     50    RPAREN          )
+46     51    NEWLINE         \n
+48     2     ID              nivel
+48     8     DECLARE         :=
+48     11    INTEGER_VALUE   2
+48     12    NEWLINE         \n
+49     2     SWITCH          switch
+49     9     ID              nivel
+49     15    LBRACE          {
+50     2     CASE            case
+50     7     INTEGER_VALUE   1
+50     8     COLON           :
+51     3     FMT             fmt
+51     6     DOT             .
+51     7     PRINTLN         Println
+51     14    LPAREN          (
+51     15    STRING_VALUE    "Nivel basico"
+51     29    RPAREN          )
+51     30    NEWLINE         \n
+52     2     CASE            case
+52     7     INTEGER_VALUE   2
+52     8     COLON           :
+53     3     FMT             fmt
+53     6     DOT             .
+53     7     PRINTLN         Println
+53     14    LPAREN          (
+53     15    STRING_VALUE    "Nivel intermedio"
+53     33    RPAREN          )
+53     34    NEWLINE         \n
+54     2     DEFAULT         default
+54     9     COLON           :
+55     3     FMT             fmt
+55     6     DOT             .
+55     7     PRINTLN         Println
+55     14    LPAREN          (
+55     15    STRING_VALUE    "Nivel avanzado"
+55     31    RPAREN          )
+55     32    NEWLINE         \n
+56     2     RBRACE          }
+56     3     NEWLINE         \n
+58     2     ID              pesos
+58     8     DECLARE         :=
+58     11    MAP             map
+58     14    LBRACKET        [
+58     15    TYPE_STRING     string
+58     21    RBRACKET        ]
+58     22    TYPE_INT        int
+58     25    LBRACE          {
+58     26    STRING_VALUE    "parcial"
+58     35    COLON           :
+58     37    INTEGER_VALUE   40
+58     39    COMMA           ,
+58     41    STRING_VALUE    "final"
+58     48    COLON           :
+58     50    INTEGER_VALUE   60
+58     52    RBRACE          }
+58     53    NEWLINE         \n
+59     2     IF              if
+59     5     ID              activo
+59     12    NE              !=
+59     15    FALSE           false
+59     21    OR              ||
+59     24    ID              pesos
+59     29    LBRACKET        [
+59     30    STRING_VALUE    "final"
+59     37    RBRACKET        ]
+59     39    EQ              ==
+59     42    INTEGER_VALUE   60
+59     45    LBRACE          {
+60     3     FMT             fmt
+60     6     DOT             .
+60     7     PRINTLN         Println
+60     14    LPAREN          (
+60     15    STRING_VALUE    "Pesos validos"
+60     30    RPAREN          )
+60     31    NEWLINE         \n
+61     2     RBRACE          }
+61     4     ELSE            else
+61     9     LBRACE          {
+62     3     FMT             fmt
+62     6     DOT             .
+62     7     PRINTLN         Println
+62     14    LPAREN          (
+62     15    STRING_VALUE    "Revisar pesos"
+62     30    RPAREN          )
+62     31    NEWLINE         \n
+63     2     RBRACE          }
+63     3     NEWLINE         \n
+65     2     FOR             for
+65     6     ID              intentos
+65     15    GT              >
+65     17    INTEGER_VALUE   0
+65     19    LBRACE          {
+66     3     ID              intentos
+66     12    MINUS_ASSIGN    -=
+66     15    INTEGER_VALUE   1
+66     16    NEWLINE         \n
+67     3     IF              if
+67     6     ID              intentos
+67     15    EQ              ==
+67     18    INTEGER_VALUE   1
+67     20    LBRACE          {
+68     4     BREAK           break
+68     9     NEWLINE         \n
+69     3     RBRACE          }
+69     4     NEWLINE         \n
+70     2     RBRACE          }
+70     3     NEWLINE         \n
+71     2     FOR             for
+71     6     ID              contador
+71     15    GT              >
+71     17    INTEGER_VALUE   1
+71     19    LBRACE          {
+72     3     ID              contador
+72     11    DEC             --
+72     13    NEWLINE         \n
+73     2     RBRACE          }
+73     3     NEWLINE         \n
+74     2     ID              ajuste
+74     9     ASSIGN          =
+74     11    ID              promedio
+74     20    MINUS           -
+74     22    FLOAT_VALUE     2.5
+74     26    TIMES           *
+74     28    FLOAT_VALUE     1.0
+74     32    PLUS            +
+74     34    FLOAT_VALUE     0.5
+74     37    NEWLINE         \n
+75     2     ID              resto
+75     8     DECLARE         :=
+75     11    ID              aprobadas
+75     21    MOD             %
+75     23    INTEGER_VALUE   2
+75     24    NEWLINE         \n
+76     2     IF              if
+76     5     ID              resto
+76     11    LE              <=
+76     14    INTEGER_VALUE   1
+76     16    AND             &&
+76     19    ID              ajuste
+76     26    GT              >
+76     28    FLOAT_VALUE     0.0
+76     32    LBRACE          {
+77     3     FMT             fmt
+77     6     DOT             .
+77     7     PRINTLN         Println
+77     14    LPAREN          (
+77     15    ID              mensaje
+77     22    COMMA           ,
+77     24    ID              resto
+77     29    COMMA           ,
+77     31    ID              ajuste
+77     37    COMMA           ,
+77     39    ID              intentos
+77     47    RPAREN          )
+77     48    NEWLINE         \n
+78     2     RBRACE          }
+78     3     NEWLINE         \n
+79     2     VAR             var
+79     6     ID              libre
+79     12    TYPE_INT        int
+79     15    NEWLINE         \n
+80     2     FMT             fmt
+80     5     DOT             .
+80     6     SCANLN          Scanln
+80     12    LPAREN          (
+80     13    ADDR            &
+80     14    ID              libre
+80     19    RPAREN          )
+80     20    NEWLINE         \n
+81     2     FMT             fmt
+81     5     DOT             .
+81     6     PRINTLN         Println
+81     13    LPAREN          (
+81     14    ID              libre
+81     19    COMMA           ,
+81     21    ID              intentos
+81     29    RPAREN          )
+81     30    NEWLINE         \n
+82     1     RBRACE          }
+82     2     NEWLINE         \n
+
+ERRORES LÉXICOS
+------------------------------------------------------------------------------
+(ninguno)
+
+RESUMEN
+------------------------------------------------------------------------------
+Total de tokens reconocidos : 364
+Tipos de token distintos    : 60
+Errores léxicos             : 0
+Resultado                   : SIN ERRORES
+
+Frecuencia por tipo de token:
+  ADDR            1
+  AND             2
+  ASSIGN          8
+  BREAK           1
+  CASE            2
+  COLON           5
+  COMMA           12
+  CONST           2
+  CONTINUE        1
+  DEC             1
+  DECLARE         7
+  DEFAULT         1
+  DIVIDE          1
+  DOT             9
+  ELSE            2
+  EQ              2
+  FALSE           1
+  FLOAT_VALUE     14
+  FMT             9
+  FOR             3
+  FUNC            2
+  GE              2
+  GT              4
+  ID              62
+  IF              6
+  IMPORT          1
+  INC             3
+  INTEGER_VALUE   17
+  LBRACE          16
+  LBRACKET        5
+  LE              1
+  LPAREN          13
+  LT              2
+  MAP             1
+  MINUS           1
+  MINUS_ASSIGN    1
+  MOD             1
+  NE              1
+  NEWLINE         49
+  NOT             1
+  OR              1
+  PACKAGE         1
+  PLUS            1
+  PLUS_ASSIGN     1
+  PRINTLN         8
+  RBRACE          16
+  RBRACKET        5
+  RETURN          3
+  RPAREN          13
+  SCANLN          1
+  SEMICOLON       3
+  STRING_VALUE    14
+  SWITCH          1
+  TIMES           1
+  TRUE            1
+  TYPE_BOOL       1
+  TYPE_FLOAT64    4
+  TYPE_INT        5
+  TYPE_STRING     3
+  VAR             8
