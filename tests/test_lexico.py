@@ -53,6 +53,23 @@ class PruebasFatima(unittest.TestCase):
                                  'ELSE', 'FOR', 'SWITCH', 'CASE', 'DEFAULT',
                                  'BREAK', 'CONTINUE', 'RETURN'])
         self.assertEqual(errs, [])
+
+    def test_funciones_de_fmt_son_tokens_propios(self):
+        tipos, errs = analizar('fmt.Println("Hola")')
+        self.assertEqual(tipos, ['FMT', 'DOT', 'PRINTLN', 'LPAREN', 'STRING_VALUE', 'RPAREN'])
+        tipos, errs = analizar('fmt.Scanln(&x)')
+        self.assertEqual(tipos, ['FMT', 'DOT', 'SCANLN', 'LPAREN', 'ADDR', 'ID', 'RPAREN'])
+        self.assertEqual(errs, [])
+
+    def test_otras_funciones_de_fmt_y_mayusculas_siguen_siendo_id(self):
+        # la propuesta solo reconoce Println y Scanln; Go distingue mayúsculas
+        tipos, _ = analizar('fmt.Printf println Fmt scanln')
+        self.assertEqual(tipos, ['FMT', 'DOT', 'ID', 'ID', 'ID', 'ID'])
+
+    def test_newline_despues_de_funcion_de_fmt(self):
+        # antes eran ID, y un ID al final de línea termina la sentencia
+        tipos, _ = analizar('fmt\nfmt.Println\n')
+        self.assertEqual(tipos, ['FMT', 'NEWLINE', 'FMT', 'DOT', 'PRINTLN', 'NEWLINE'])
 # FIN aporte: Fátima Torres
 
 
@@ -154,7 +171,7 @@ class PruebasElkin(unittest.TestCase):
 
     def test_direccion_en_scanln(self):
         tipos, _ = analizar('fmt.Scanln(&edad)')
-        self.assertEqual(tipos, ['ID', 'DOT', 'ID', 'LPAREN', 'ADDR', 'ID', 'RPAREN'])
+        self.assertEqual(tipos, ['FMT', 'DOT', 'SCANLN', 'LPAREN', 'ADDR', 'ID', 'RPAREN'])
 
     def test_error_L5_operador_incompleto(self):
         tipos, errs = analizar('if a | b {')

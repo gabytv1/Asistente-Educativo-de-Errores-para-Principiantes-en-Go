@@ -102,7 +102,19 @@ reservadas_basicas = {
     'return': 'RETURN',
 }
 reservadas.update(reservadas_basicas)
-tokens_reservadas = list(reservadas_basicas.values())
+
+# Paquete fmt: la propuesta (sección 5) reconoce solo estas dos funciones, y el
+# nombre del paquete. Se distinguen de los identificadores igual que las
+# palabras reservadas, para que el analizador sintáctico y el semántico no las
+# traten como variables o funciones sin declarar.
+reservadas_fmt = {
+    'fmt': 'FMT',
+    'Println': 'PRINTLN',
+    'Scanln': 'SCANLN',
+}
+reservadas.update(reservadas_fmt)
+
+tokens_reservadas = list(reservadas_basicas.values()) + list(reservadas_fmt.values())
 # FIN aporte: Fátima Torres
 
 
@@ -263,7 +275,8 @@ tokens = tuple(tokens_comentarios + tokens_reservadas + tokens_delimitadores
 # El salto de línea solo termina una sentencia si el último token de la línea
 # es uno de estos (regla de inserción automática de Go, ver sección 3).
 TOKENS_QUE_CIERRAN_SENTENCIA = {
-    'ID', 'TYPE_INT', 'TYPE_FLOAT64', 'TYPE_STRING', 'TYPE_BOOL',
+    'ID', 'FMT', 'PRINTLN', 'SCANLN',
+    'TYPE_INT', 'TYPE_FLOAT64', 'TYPE_STRING', 'TYPE_BOOL',
     'TRUE', 'FALSE', 'INTEGER_VALUE', 'FLOAT_VALUE', 'STRING_VALUE',
     'BREAK', 'CONTINUE', 'RETURN',
     'INC', 'DEC', 'RPAREN', 'RBRACKET', 'RBRACE',
