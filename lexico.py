@@ -210,8 +210,40 @@ def t_COMILLA_SIMPLE(t):                       # Error L6
 
 
 # --- Identificadores y palabras reservadas -------------------------------
+
+# INICIO aporte: Fátima Torres (error L7)
+# Palabras reservadas de Go que NO forman parte del subconjunto (Error L7).
+# Clave: palabra; valor: sugerencia para el estudiante.
+no_soportadas = {
+    'range': "usa un for con inicio, condición y paso, por ejemplo "
+             "for i := 0; i < 5; i++ {",
+    'type': "este subconjunto no permite definir tipos nuevos; usa int, "
+            "float64, string, bool, arreglos, slices o mapas",
+    'struct': "este subconjunto no incluye structs; usa variables, arreglos "
+              "o mapas",
+    'interface': "este subconjunto no incluye interfaces",
+    'chan': "este subconjunto no incluye canales",
+    'select': "este subconjunto no incluye select; usa switch",
+    'go': "este subconjunto no incluye goroutines",
+    'defer': "este subconjunto no incluye defer",
+    'goto': "usa for, if o switch en lugar de goto",
+    'fallthrough': "en Go cada case termina solo; usa break si necesitas salir",
+}
+# FIN aporte: Fátima Torres
+
 def t_ID(t):
     r'[^\W\d]\w*'
+
+    # INICIO aporte: Fátima Torres (L7)
+    if t.value in no_soportadas:                # Error L7
+        registrar_error(
+            t, 'L7',
+            "la palabra '%s' es una palabra reservada de Go que no pertenece "
+            "al subconjunto definido. Sugerencia: %s."
+            % (t.value, no_soportadas[t.value]))
+        return None                             # se descarta, sin token
+    # FIN aporte: Fátima Torres
+
     # Letra (incluye tildes y ñ: año, número) o _ seguida de letras, dígitos o _.
     # Las palabras reservadas se reconocen antes que los identificadores.
     t.type = reservadas.get(t.value, 'ID')

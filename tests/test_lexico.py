@@ -70,6 +70,22 @@ class PruebasFatima(unittest.TestCase):
         # antes eran ID, y un ID al final de línea termina la sentencia
         tipos, _ = analizar('fmt\nfmt.Println\n')
         self.assertEqual(tipos, ['FMT', 'NEWLINE', 'FMT', 'DOT', 'PRINTLN', 'NEWLINE'])
+
+    def test_error_L7_range_no_soportada(self):
+        tipos, errs = analizar('for i := range xs {')
+        self.assertEqual([e['codigo'] for e in errs], ['L7'])
+        self.assertEqual((errs[0]['linea'], errs[0]['columna']), (1, 10))
+        self.assertIn("'range'", errs[0]['mensaje'])
+        self.assertEqual(tipos, ['FOR', 'ID', 'DECLARE', 'ID', 'LBRACE'])
+
+    def test_L7_todas_las_palabras_no_soportadas(self):
+        for palabra in lexico.no_soportadas:
+            _, errs = analizar(palabra)
+            self.assertEqual([e['codigo'] for e in errs], ['L7'], palabra)
+
+    def test_L7_no_afecta_identificadores_parecidos_ni_cadenas(self):
+        tipos, errs = analizar('rangex := 1\nmi_type := 2\ns := "range type" // go')
+        self.assertEqual(errs, [])
 # FIN aporte: Fátima Torres
 
 
