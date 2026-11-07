@@ -1,0 +1,565 @@
+==============================================================================
+ANÁLISIS LÉXICO - Asistente Educativo de Errores para Go
+==============================================================================
+Desarrollador : César Balladares
+Archivo       : algoritmos/algoritmo2.go
+Fecha y hora  : 07-11-2026 18:04
+==============================================================================
+
+TOKENS RECONOCIDOS
+LÍNEA  COL.  TOKEN           LEXEMA
+------------------------------------------------------------------------------
+1      1     PACKAGE         package
+1      9     ID              main
+1      13    NEWLINE         \n
+3      1     IMPORT          import
+3      8     STRING_VALUE    "fmt"
+3      13    NEWLINE         \n
+11     1     CONST           const
+11     7     ID              PI
+11     10    ASSIGN          =
+11     12    FLOAT_VALUE     3.14159
+11     19    NEWLINE         \n
+12     1     CONST           const
+12     7     ID              SALUDO
+12     14    ASSIGN          =
+12     16    STRING_VALUE    "Calculadora basica"
+12     36    NEWLINE         \n
+14     1     VAR             var
+14     5     ID              llamadas
+14     14    TYPE_INT        int
+14     18    ASSIGN          =
+14     20    INTEGER_VALUE   0
+14     21    NEWLINE         \n
+15     1     VAR             var
+15     5     ID              precision
+15     15    TYPE_FLOAT64    float64
+15     23    ASSIGN          =
+15     25    FLOAT_VALUE     0.01
+15     29    NEWLINE         \n
+16     1     VAR             var
+16     5     ID              modo
+16     10    TYPE_STRING     string
+16     17    ASSIGN          =
+16     19    STRING_VALUE    "completo"
+16     29    NEWLINE         \n
+17     1     VAR             var
+17     5     ID              verbose
+17     13    TYPE_BOOL       bool
+17     18    ASSIGN          =
+17     20    FALSE           false
+17     25    NEWLINE         \n
+19     1     FUNC            func
+19     6     ID              factorial
+19     15    LPAREN          (
+19     16    ID              n
+19     18    TYPE_INT        int
+19     21    RPAREN          )
+19     23    TYPE_INT        int
+19     27    LBRACE          {
+20     2     IF              if
+20     5     ID              n
+20     7     LE              <=
+20     10    INTEGER_VALUE   1
+20     12    LBRACE          {
+21     3     RETURN          return
+21     10    INTEGER_VALUE   1
+21     11    NEWLINE         \n
+22     2     RBRACE          }
+22     3     NEWLINE         \n
+23     2     RETURN          return
+23     9     ID              n
+23     11    TIMES           *
+23     13    ID              factorial
+23     22    LPAREN          (
+23     23    ID              n
+23     24    MINUS           -
+23     25    INTEGER_VALUE   1
+23     26    RPAREN          )
+23     27    NEWLINE         \n
+24     1     RBRACE          }
+24     2     NEWLINE         \n
+26     1     FUNC            func
+26     6     ID              dividir
+26     13    LPAREN          (
+26     14    ID              a
+26     16    TYPE_INT        int
+26     19    COMMA           ,
+26     21    ID              b
+26     23    TYPE_INT        int
+26     26    RPAREN          )
+26     28    LPAREN          (
+26     29    TYPE_INT        int
+26     32    COMMA           ,
+26     34    TYPE_INT        int
+26     37    RPAREN          )
+26     39    LBRACE          {
+27     2     RETURN          return
+27     9     ID              a
+27     11    DIVIDE          /
+27     13    ID              b
+27     14    COMMA           ,
+27     16    ID              a
+27     18    MOD             %
+27     20    ID              b
+27     21    NEWLINE         \n
+28     1     RBRACE          }
+28     2     NEWLINE         \n
+30     1     FUNC            func
+30     6     ID              promedio
+30     14    LPAREN          (
+30     15    ID              valores
+30     23    LBRACKET        [
+30     24    RBRACKET        ]
+30     25    TYPE_FLOAT64    float64
+30     32    RPAREN          )
+30     34    TYPE_FLOAT64    float64
+30     42    LBRACE          {
+31     2     VAR             var
+31     6     ID              suma
+31     11    TYPE_FLOAT64    float64
+31     19    ASSIGN          =
+31     21    FLOAT_VALUE     0.0
+31     24    NEWLINE         \n
+32     2     FOR             for
+32     6     ID              i
+32     8     DECLARE         :=
+32     11    INTEGER_VALUE   0
+32     12    SEMICOLON       ;
+32     14    ID              i
+32     16    LT              <
+32     18    INTEGER_VALUE   4
+32     19    SEMICOLON       ;
+32     21    ID              i
+32     22    INC             ++
+32     25    LBRACE          {
+33     3     ID              suma
+33     8     PLUS_ASSIGN     +=
+33     11    ID              valores
+33     18    LBRACKET        [
+33     19    ID              i
+33     20    RBRACKET        ]
+33     21    NEWLINE         \n
+34     2     RBRACE          }
+34     3     NEWLINE         \n
+35     2     RETURN          return
+35     9     ID              suma
+35     14    DIVIDE          /
+35     16    FLOAT_VALUE     4.0
+35     19    NEWLINE         \n
+36     1     RBRACE          }
+36     2     NEWLINE         \n
+38     1     FUNC            func
+38     6     ID              mostrar
+38     13    LPAREN          (
+38     14    ID              texto
+38     20    TYPE_STRING     string
+38     26    RPAREN          )
+38     28    LBRACE          {
+39     2     ID              llamadas
+39     10    INC             ++
+39     12    NEWLINE         \n
+40     2     FMT             fmt
+40     5     DOT             .
+40     6     PRINTLN         Println
+40     13    LPAREN          (
+40     14    ID              texto
+40     19    RPAREN          )
+40     20    NEWLINE         \n
+41     1     RBRACE          }
+41     2     NEWLINE         \n
+43     1     FUNC            func
+43     6     ID              main
+43     10    LPAREN          (
+43     11    RPAREN          )
+43     13    LBRACE          {
+44     2     ID              mostrar
+44     9     LPAREN          (
+44     10    ID              SALUDO
+44     16    RPAREN          )
+44     17    NEWLINE         \n
+45     2     ID              f
+45     4     DECLARE         :=
+45     7     ID              factorial
+45     16    LPAREN          (
+45     17    INTEGER_VALUE   5
+45     18    RPAREN          )
+45     19    NEWLINE         \n
+46     2     ID              c
+46     3     COMMA           ,
+46     5     ID              m
+46     7     DECLARE         :=
+46     10    ID              dividir
+46     17    LPAREN          (
+46     18    INTEGER_VALUE   17
+46     20    COMMA           ,
+46     22    INTEGER_VALUE   5
+46     23    RPAREN          )
+46     24    NEWLINE         \n
+47     2     FMT             fmt
+47     5     DOT             .
+47     6     PRINTLN         Println
+47     13    LPAREN          (
+47     14    STRING_VALUE    "Factorial:"
+47     26    COMMA           ,
+47     28    ID              f
+47     29    COMMA           ,
+47     31    STRING_VALUE    "Cociente:"
+47     42    COMMA           ,
+47     44    ID              c
+47     45    COMMA           ,
+47     47    STRING_VALUE    "Residuo:"
+47     57    COMMA           ,
+47     59    ID              m
+47     60    RPAREN          )
+47     61    NEWLINE         \n
+49     2     ID              edades
+49     9     DECLARE         :=
+49     12    LBRACKET        [
+49     13    RBRACKET        ]
+49     14    TYPE_FLOAT64    float64
+49     21    LBRACE          {
+49     22    FLOAT_VALUE     18.0
+49     26    COMMA           ,
+49     28    FLOAT_VALUE     21.5
+49     32    COMMA           ,
+49     34    FLOAT_VALUE     25.0
+49     38    COMMA           ,
+49     40    FLOAT_VALUE     30.5
+49     44    RBRACE          }
+49     45    NEWLINE         \n
+50     2     ID              prom
+50     7     DECLARE         :=
+50     10    ID              promedio
+50     18    LPAREN          (
+50     19    ID              edades
+50     25    RPAREN          )
+50     26    NEWLINE         \n
+51     2     ID              area
+51     7     DECLARE         :=
+51     10    ID              PI
+51     13    TIMES           *
+51     15    FLOAT_VALUE     2.0
+51     19    TIMES           *
+51     21    FLOAT_VALUE     2.0
+51     24    NEWLINE         \n
+52     2     FMT             fmt
+52     5     DOT             .
+52     6     PRINTLN         Println
+52     13    LPAREN          (
+52     14    STRING_VALUE    "Promedio:"
+52     25    COMMA           ,
+52     27    ID              prom
+52     31    COMMA           ,
+52     33    STRING_VALUE    "Area:"
+52     40    COMMA           ,
+52     42    ID              area
+52     46    COMMA           ,
+52     48    ID              modo
+52     52    RPAREN          )
+52     53    NEWLINE         \n
+54     2     ID              nombres
+54     10    DECLARE         :=
+54     13    LBRACKET        [
+54     14    RBRACKET        ]
+54     15    TYPE_STRING     string
+54     21    LBRACE          {
+54     22    STRING_VALUE    "Ana"
+54     27    COMMA           ,
+54     29    STRING_VALUE    "Luis"
+54     35    COMMA           ,
+54     37    STRING_VALUE    "Maria"
+54     44    RBRACE          }
+54     45    NEWLINE         \n
+55     2     VAR             var
+55     6     ID              etiqueta
+55     15    TYPE_STRING     string
+55     22    ASSIGN          =
+55     24    STRING_VALUE    "Grupo: "
+55     33    NEWLINE         \n
+56     2     ID              etiqueta
+56     11    ASSIGN          =
+56     13    ID              etiqueta
+56     22    PLUS            +
+56     24    ID              nombres
+56     31    LBRACKET        [
+56     32    INTEGER_VALUE   0
+56     33    RBRACKET        ]
+56     34    NEWLINE         \n
+57     2     FMT             fmt
+57     5     DOT             .
+57     6     PRINTLN         Println
+57     13    LPAREN          (
+57     14    ID              etiqueta
+57     22    RPAREN          )
+57     23    NEWLINE         \n
+59     2     VAR             var
+59     6     ID              contador
+59     15    TYPE_INT        int
+59     19    ASSIGN          =
+59     21    INTEGER_VALUE   10
+59     23    NEWLINE         \n
+60     2     FOR             for
+60     6     ID              contador
+60     15    GT              >
+60     17    INTEGER_VALUE   0
+60     19    LBRACE          {
+61     3     ID              contador
+61     12    MINUS_ASSIGN    -=
+61     15    INTEGER_VALUE   3
+61     16    NEWLINE         \n
+62     3     ID              llamadas
+62     11    INC             ++
+62     13    NEWLINE         \n
+63     3     IF              if
+63     6     ID              contador
+63     15    LT              <
+63     17    INTEGER_VALUE   4
+63     19    AND             &&
+63     22    NOT             !
+63     23    ID              verbose
+63     31    LBRACE          {
+64     4     BREAK           break
+64     9     NEWLINE         \n
+65     3     RBRACE          }
+65     4     NEWLINE         \n
+66     2     RBRACE          }
+66     3     NEWLINE         \n
+68     2     ID              pares
+68     8     DECLARE         :=
+68     11    MAP             map
+68     14    LBRACKET        [
+68     15    TYPE_STRING     string
+68     21    RBRACKET        ]
+68     22    TYPE_INT        int
+68     25    LBRACE          {
+68     26    STRING_VALUE    "pares"
+68     33    COLON           :
+68     35    INTEGER_VALUE   0
+68     36    COMMA           ,
+68     38    STRING_VALUE    "impares"
+68     47    COLON           :
+68     49    INTEGER_VALUE   0
+68     50    RBRACE          }
+68     51    NEWLINE         \n
+69     2     FOR             for
+69     6     ID              i
+69     8     DECLARE         :=
+69     11    INTEGER_VALUE   1
+69     12    SEMICOLON       ;
+69     14    ID              i
+69     16    LE              <=
+69     19    INTEGER_VALUE   6
+69     20    SEMICOLON       ;
+69     22    ID              i
+69     23    INC             ++
+69     26    LBRACE          {
+70     3     IF              if
+70     6     ID              i
+70     7     MOD             %
+70     8     INTEGER_VALUE   2
+70     10    EQ              ==
+70     13    INTEGER_VALUE   0
+70     15    LBRACE          {
+71     4     ID              pares
+71     9     LBRACKET        [
+71     10    STRING_VALUE    "pares"
+71     17    RBRACKET        ]
+71     18    INC             ++
+71     20    NEWLINE         \n
+72     4     CONTINUE        continue
+72     12    NEWLINE         \n
+73     3     RBRACE          }
+73     4     NEWLINE         \n
+74     3     ID              pares
+74     8     LBRACKET        [
+74     9     STRING_VALUE    "impares"
+74     18    RBRACKET        ]
+74     19    INC             ++
+74     21    NEWLINE         \n
+75     2     RBRACE          }
+75     3     NEWLINE         \n
+76     2     FMT             fmt
+76     5     DOT             .
+76     6     PRINTLN         Println
+76     13    LPAREN          (
+76     14    ID              pares
+76     19    LBRACKET        [
+76     20    STRING_VALUE    "pares"
+76     27    RBRACKET        ]
+76     28    COMMA           ,
+76     30    ID              pares
+76     35    LBRACKET        [
+76     36    STRING_VALUE    "impares"
+76     45    RBRACKET        ]
+76     46    COMMA           ,
+76     48    ID              llamadas
+76     56    COMMA           ,
+76     58    ID              contador
+76     66    RPAREN          )
+76     67    NEWLINE         \n
+78     2     SWITCH          switch
+78     9     ID              c
+78     11    LBRACE          {
+79     2     CASE            case
+79     7     INTEGER_VALUE   3
+79     8     COLON           :
+80     3     FMT             fmt
+80     6     DOT             .
+80     7     PRINTLN         Println
+80     14    LPAREN          (
+80     15    STRING_VALUE    "Cociente tres"
+80     30    RPAREN          )
+80     31    NEWLINE         \n
+81     2     DEFAULT         default
+81     9     COLON           :
+82     3     FMT             fmt
+82     6     DOT             .
+82     7     PRINTLN         Println
+82     14    LPAREN          (
+82     15    STRING_VALUE    "Otro cociente"
+82     30    RPAREN          )
+82     31    NEWLINE         \n
+83     2     RBRACE          }
+83     3     NEWLINE         \n
+85     2     IF              if
+85     5     ID              precision
+85     15    GE              >=
+85     18    FLOAT_VALUE     0.001
+85     24    OR              ||
+85     27    ID              verbose
+85     35    EQ              ==
+85     38    TRUE            true
+85     43    LBRACE          {
+86     3     FMT             fmt
+86     6     DOT             .
+86     7     PRINTLN         Println
+86     14    LPAREN          (
+86     15    STRING_VALUE    "Precision aceptable"
+86     36    RPAREN          )
+86     37    NEWLINE         \n
+87     2     RBRACE          }
+87     4     ELSE            else
+87     9     LBRACE          {
+88     3     FMT             fmt
+88     6     DOT             .
+88     7     PRINTLN         Println
+88     14    LPAREN          (
+88     15    STRING_VALUE    "Precision baja"
+88     31    RPAREN          )
+88     32    NEWLINE         \n
+89     2     RBRACE          }
+89     3     NEWLINE         \n
+90     2     VAR             var
+90     6     ID              leido
+90     12    TYPE_INT        int
+90     15    NEWLINE         \n
+91     2     IF              if
+91     5     ID              llamadas
+91     14    NE              !=
+91     17    INTEGER_VALUE   0
+91     19    LBRACE          {
+92     3     FMT             fmt
+92     6     DOT             .
+92     7     PRINTLN         Println
+92     14    LPAREN          (
+92     15    STRING_VALUE    "Hubo llamadas:"
+92     31    COMMA           ,
+92     33    ID              llamadas
+92     41    RPAREN          )
+92     42    NEWLINE         \n
+93     2     RBRACE          }
+93     3     NEWLINE         \n
+94     2     FMT             fmt
+94     5     DOT             .
+94     6     SCANLN          Scanln
+94     12    LPAREN          (
+94     13    ADDR            &
+94     14    ID              leido
+94     19    RPAREN          )
+94     20    NEWLINE         \n
+95     2     ID              leido
+95     7     DEC             --
+95     9     NEWLINE         \n
+96     2     FMT             fmt
+96     5     DOT             .
+96     6     PRINTLN         Println
+96     13    LPAREN          (
+96     14    ID              leido
+96     19    RPAREN          )
+96     20    NEWLINE         \n
+97     1     RBRACE          }
+97     2     NEWLINE         \n
+
+ERRORES LÉXICOS
+------------------------------------------------------------------------------
+(ninguno)
+
+RESUMEN
+------------------------------------------------------------------------------
+Total de tokens reconocidos : 481
+Tipos de token distintos    : 60
+Errores léxicos             : 0
+Resultado                   : SIN ERRORES
+
+Frecuencia por tipo de token:
+  ADDR            1
+  AND             1
+  ASSIGN          10
+  BREAK           1
+  CASE            1
+  COLON           4
+  COMMA           24
+  CONST           2
+  CONTINUE        1
+  DEC             1
+  DECLARE         9
+  DEFAULT         1
+  DIVIDE          2
+  DOT             12
+  ELSE            1
+  EQ              2
+  FALSE           1
+  FLOAT_VALUE     11
+  FMT             12
+  FOR             3
+  FUNC            5
+  GE              1
+  GT              1
+  ID              86
+  IF              5
+  IMPORT          1
+  INC             6
+  INTEGER_VALUE   22
+  LBRACE          18
+  LBRACKET        10
+  LE              2
+  LPAREN          23
+  LT              2
+  MAP             1
+  MINUS           1
+  MINUS_ASSIGN    1
+  MOD             2
+  NE              1
+  NEWLINE         60
+  NOT             1
+  OR              1
+  PACKAGE         1
+  PLUS            1
+  PLUS_ASSIGN     1
+  PRINTLN         11
+  RBRACE          18
+  RBRACKET        10
+  RETURN          4
+  RPAREN          23
+  SCANLN          1
+  SEMICOLON       4
+  STRING_VALUE    23
+  SWITCH          1
+  TIMES           3
+  TRUE            1
+  TYPE_BOOL       1
+  TYPE_FLOAT64    5
+  TYPE_INT        10
+  TYPE_STRING     5
+  VAR             8

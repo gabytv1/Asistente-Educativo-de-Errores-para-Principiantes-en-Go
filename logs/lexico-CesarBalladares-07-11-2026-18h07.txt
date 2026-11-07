@@ -1,0 +1,97 @@
+==============================================================================
+ANÁLISIS LÉXICO - Asistente Educativo de Errores para Go
+==============================================================================
+Desarrollador : César Balladares
+Archivo       : errores/error_cesar.go
+Fecha y hora  : 07-11-2026 18:07
+==============================================================================
+
+TOKENS RECONOCIDOS
+LÍNEA  COL.  TOKEN           LEXEMA
+------------------------------------------------------------------------------
+1      1     PACKAGE         package
+1      9     ID              main
+1      13    NEWLINE         \n
+3      1     IMPORT          import
+3      8     STRING_VALUE    "fmt"
+3      13    NEWLINE         \n
+7      1     FUNC            func
+7      6     ID              main
+7      10    LPAREN          (
+7      11    RPAREN          )
+7      13    LBRACE          {
+8      2     ID              x
+8      4     DECLARE         :=
+8      7     INTEGER_VALUE   5
+8      11    INTEGER_VALUE   3
+8      12    NEWLINE         \n
+9      2     ID              msg
+9      6     DECLARE         :=
+10     2     ID              edad
+10     7     DECLARE         :=
+11     2     ID              pi
+11     5     DECLARE         :=
+12     2     ID              saludo
+12     9     DECLARE         :=
+13     2     VAR             var
+13     6     ID              ok
+13     9     TYPE_BOOL       bool
+13     14    ASSIGN          =
+13     16    TRUE            true
+13     20    NEWLINE         \n
+14     2     FMT             fmt
+14     5     DOT             .
+14     6     PRINTLN         Println
+14     13    LPAREN          (
+14     14    ID              x
+14     15    COMMA           ,
+14     17    ID              msg
+14     20    COMMA           ,
+14     22    ID              edad
+14     26    COMMA           ,
+14     28    ID              pi
+14     30    COMMA           ,
+14     32    ID              saludo
+14     38    COMMA           ,
+14     40    ID              ok
+14     42    RPAREN          )
+14     43    NEWLINE         \n
+15     1     RBRACE          }
+15     2     NEWLINE         \n
+
+ERRORES LÉXICOS
+------------------------------------------------------------------------------
+[L1] Error léxico [línea 8, col. 9]: el carácter '@' no pertenece al subconjunto definido. Sugerencia: elimínalo o reemplázalo por un operador válido.
+[L2] Error léxico [línea 9, col. 9]: la cadena de texto no tiene comilla de cierre. Sugerencia: agrega " al final de la cadena.
+[L3] Error léxico [línea 10, col. 10]: el literal '12abc' no es válido. Sugerencia: revisa que el número no contenga letras ni más de un punto decimal.
+[L3] Error léxico [línea 11, col. 8]: el literal '3.14.15' no es válido. Sugerencia: revisa que el número no contenga letras ni más de un punto decimal.
+[L6] Error léxico [línea 12, col. 12]: el texto 'hola' usa comillas simples, pero las cadenas de texto se escriben con comillas dobles. Sugerencia: reemplázalo por "hola".
+
+RESUMEN
+------------------------------------------------------------------------------
+Total de tokens reconocidos : 49
+Tipos de token distintos    : 20
+Errores léxicos             : 5
+Resultado                   : CON ERRORES
+
+Frecuencia por tipo de token:
+  ASSIGN          1
+  COMMA           5
+  DECLARE         5
+  DOT             1
+  FMT             1
+  FUNC            1
+  ID              14
+  IMPORT          1
+  INTEGER_VALUE   2
+  LBRACE          1
+  LPAREN          2
+  NEWLINE         6
+  PACKAGE         1
+  PRINTLN         1
+  RBRACE          1
+  RPAREN          2
+  STRING_VALUE    1
+  TRUE            1
+  TYPE_BOOL       1
+  VAR             1
