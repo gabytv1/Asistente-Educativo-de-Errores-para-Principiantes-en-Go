@@ -9,6 +9,7 @@ func main() {
 	msg := "Hola
 	edad := 12abc
 	pi := 3.14.15
+	saludo := 'hola'
 	var ok bool = true
-	fmt.Println(x, msg, edad, pi, ok)
+	fmt.Println(x, msg, edad, pi, saludo, ok)
 }

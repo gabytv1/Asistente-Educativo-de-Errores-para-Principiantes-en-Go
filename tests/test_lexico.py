@@ -130,6 +130,64 @@ class PruebasCesar(unittest.TestCase):
     def test_varios_errores_en_un_archivo(self):
         _, errs = analizar('@\n"abc\n7x')
         self.assertEqual([e['codigo'] for e in errs], ['L1', 'L2', 'L3'])
+
+    def test_error_L6_comillas_simples(self):
+        tipos, errs = analizar("msg := 'hola'")
+        self.assertEqual([e['codigo'] for e in errs], ['L6'])
+        self.assertEqual((errs[0]['linea'], errs[0]['columna']), (1, 8))
+        self.assertIn("'hola'", errs[0]['mensaje'])
+        self.assertIn('"hola"', errs[0]['mensaje'])             # sugerencia
+        self.assertEqual(tipos, ['ID', 'DECLARE'])               # no genera ID 'hola'
+
+    def test_L6_comilla_simple_sin_cerrar_o_vacia(self):
+        tipos, errs = analizar("'hola")
+        self.assertEqual([e['codigo'] for e in errs], ['L6'])
+        self.assertEqual(tipos, [])
+        _, errs = analizar("x := ''")
+        self.assertEqual([e['codigo'] for e in errs], ['L6'])
+        self.assertIn('""', errs[0]['mensaje'])
+
+    def test_apostrofe_dentro_de_cadena_no_es_error(self):
+        tipos, errs = analizar('"it\'s ok"')
+        self.assertEqual(tipos, ['STRING_VALUE'])
+        self.assertEqual(errs, [])
+
+    def test_cadena_con_comilla_escapada(self):
+        tipos, errs = analizar('x := "dijo \\"hola\\""')
+        self.assertEqual(tipos, ['ID', 'DECLARE', 'STRING_VALUE'])
+        self.assertEqual(errs, [])
+
+    def test_cadena_con_secuencias_de_escape(self):
+        tipos, errs = analizar('"a\\nb\\tc" "C:\\\\"')
+        self.assertEqual(tipos, ['STRING_VALUE', 'STRING_VALUE'])
+        self.assertEqual(errs, [])
+
+    def test_cadena_que_termina_en_comilla_escapada_queda_sin_cerrar(self):
+        _, errs = analizar('"abc\\"')
+        self.assertEqual([e['codigo'] for e in errs], ['L2'])
+
+    def test_cadena_con_barra_al_final_sin_cerrar_es_un_solo_error(self):
+        _, errs = analizar('x := "abc\\')
+        self.assertEqual([e['codigo'] for e in errs], ['L2'])
+
+    def test_identificador_con_tilde_y_enie(self):
+        toks, errs = AnalizadorLexico().analizar('año número')
+        self.assertEqual([(t.type, t.value) for t in toks],
+                         [('ID', 'año'), ('ID', 'número')])
+        self.assertEqual(errs, [])
+
+    def test_numero_seguido_de_letra_con_tilde_es_L3(self):
+        _, errs = analizar('x := 12ñ')
+        self.assertEqual([e['codigo'] for e in errs], ['L3'])
+
+    def test_L6_comilla_simple_con_escape_no_genera_errores_en_cascada(self):
+        tipos, errs = analizar("a := '\\n'\nb := '\\''")
+        self.assertEqual([e['codigo'] for e in errs], ['L6', 'L6'])
+        self.assertEqual(tipos, ['ID', 'DECLARE', 'ID', 'DECLARE'])
+
+    def test_comilla_simple_en_comentario_no_es_error(self):
+        _, errs = analizar("x := 1 // it's ok\n/* don't */ y := 2")
+        self.assertEqual(errs, [])
 # FIN aporte: César Balladares
 
 

@@ -161,12 +161,12 @@ tokens_literales = [
 
 # --- Números ---------------------------------------------------------------
 def t_NUMERO_MAL_FORMADO(t):                   # Error L3
-    r'[0-9]+(?:\.[0-9]+){2,}[0-9A-Za-z_.]*|[0-9]+(?:\.[0-9]+)?[A-Za-z_][0-9A-Za-z_.]*'
+    r'[0-9]+(?:\.[0-9]+){2,}[\w.]*|[0-9]+(?:\.[0-9]+)?[^\W\d][\w.]*'
     registrar_error(
         t, 'L3',
         "el literal '%s' no es válido. Sugerencia: revisa que el número no "
         "contenga letras ni más de un punto decimal." % t.value)
-
+    
 
 def t_FLOAT_VALUE(t):
     r'[0-9]+\.[0-9]+'
@@ -182,21 +182,37 @@ def t_INTEGER_VALUE(t):
 
 # --- Cadenas ---------------------------------------------------------------
 def t_STRING_VALUE(t):
-    r'"[^"\n]*"'
+    r'"(?:[^"\\\n]|\\.)*"'
     return t
 
 
 def t_CADENA_SIN_CERRAR(t):                    # Error L2
-    r'"[^"\n]*'
+    r'"(?:[^"\\\n]|\\.)*\\?'
     registrar_error(
         t, 'L2',
         "la cadena de texto no tiene comilla de cierre. "
         "Sugerencia: agrega \" al final de la cadena.")
 
 
+def t_COMILLA_SIMPLE(t):                       # Error L6
+    r"'(?:[^'\\\n]|\\.)*\\?'?"
+    # En Go las cadenas llevan comillas dobles; las simples son para un solo
+    # carácter (rune), que este subconjunto no incluye. Se admite \ dentro
+    # (por ejemplo '\n' o '\'') para consumir el texto completo y no generar
+    # errores en cascada.
+    cerrada = len(t.value) > 1 and t.value.endswith("'")
+    contenido = t.value[1:-1] if cerrada else t.value[1:]
+    registrar_error(
+        t, 'L6',
+        "el texto %s usa comillas simples, pero las cadenas de texto se escriben "
+        "con comillas dobles. Sugerencia: reemplázalo por \"%s\"."
+        % (t.value, contenido))
+
+
 # --- Identificadores y palabras reservadas -------------------------------
 def t_ID(t):
-    r'[A-Za-z_][A-Za-z0-9_]*'
+    r'[^\W\d]\w*'
+    # Letra (incluye tildes y ñ: año, número) o _ seguida de letras, dígitos o _.
     # Las palabras reservadas se reconocen antes que los identificadores.
     t.type = reservadas.get(t.value, 'ID')
     return t
