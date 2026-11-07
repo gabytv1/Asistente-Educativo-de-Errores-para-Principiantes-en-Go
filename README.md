@@ -35,7 +35,7 @@ python -m unittest discover -s tests -v
 
 | | Fátima Torres | César Balladares | Elkin Salazar |
 |---|---|---|---|
-| **Tokens** | Palabras reservadas (excepto `map`), delimitadores, NEWLINE, comentarios, error L4 | ID, INTEGER_VALUE, FLOAT_VALUE, STRING_VALUE, TRUE, FALSE, tipos, errores L1, L2, L3 | Operadores, `map`, error L5 |
+| **Tokens** | Palabras reservadas (excepto `map`), `fmt`, `Println` y `Scanln`, delimitadores, NEWLINE, comentarios, error L4 | ID (admite tildes y ñ), INTEGER_VALUE, FLOAT_VALUE, STRING_VALUE (admite escapes), TRUE, FALSE, tipos, errores L1, L2, L3 y L6 | Operadores, `map`, error L5 |
 | **Infraestructura** | Repositorio y README; utilidades compartidas y clase del analizador (regla de NEWLINE) | `main.py`: generación de logs con el nombre y formato pedidos | Prueba integral con el programa de la propuesta (69 tokens) y verificación de los algoritmos con `go build` |
 | **unittest** | Pruebas de sus tokens | Pruebas de sus tokens | Pruebas de sus tokens |
 | **Algoritmo y errores** | `algoritmo1.go`, `error_fatima.go` | `algoritmo2.go`, `error_cesar.go` | `algoritmo3.go`, `error_elkin.go` |

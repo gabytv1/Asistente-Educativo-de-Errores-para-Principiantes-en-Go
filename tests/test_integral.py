@@ -42,6 +42,13 @@ class PruebaIntegral(unittest.TestCase):
                      ('IMPORT', 3, 1), ('STRING_VALUE', 3, 8)]
         self.assertEqual([(t.type, t.lineno, t.columna) for t in toks[:5]], esperados)
 
+    def test_fmt_y_sus_funciones_son_tokens_propios(self):
+        # línea 14: fmt.Println("Total:", total)
+        toks, _ = AnalizadorLexico().analizar(PROGRAMA)
+        linea14 = [t.type for t in toks if t.lineno == 14]
+        self.assertEqual(linea14[:3], ['FMT', 'DOT', 'PRINTLN'])
+        self.assertNotIn('Println', [t.value for t in toks if t.type == 'ID'])
+
     def test_funciona_con_saltos_de_linea_de_windows(self):
         toks, errs = AnalizadorLexico().analizar(PROGRAMA.replace('\n', '\r\n'))
         self.assertEqual(len(toks), 69)
