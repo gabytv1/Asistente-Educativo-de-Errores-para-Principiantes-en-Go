@@ -12,6 +12,8 @@ Cómo está organizado
   * Cada regla gramatical es una función p_xxx cuyo docstring es la regla
     (así lo exige PLY). Las reglas están agrupadas por integrante entre los
     comentarios  INICIO aporte / FIN aporte.
+  * Si el programa es correcto se construye un árbol sintáctico abstracto
+    (AST) con objetos Nodo, pensado para el analizador semántico (Avance 3).
   * Los errores se guardan con los códigos Y1 a Y6 de la propuesta (Tabla 16)
     y el analizador intenta recuperarse para seguir buscando más errores.
 
@@ -472,6 +474,190 @@ def error_incompleto_oculto(c):
 #    función sin retorno, impresión fmt.Println y lectura fmt.Scanln.
 #    Mensajes Y3 (llave sin cerrar) y Y6 (token inesperado) -> ver p_error.
 # ===========================================================================
+# INICIO aporte: Elkin Salazar
+# --- Estructura del programa -------------------------------------------------
+def p_programa(p):
+    'programa : cabecera importacion declaraciones'
+    p[0] = Nodo('programa', 1, p[1], p[2], p[3])
+
+
+def p_cabecera(p):
+    'cabecera : PACKAGE ID NEWLINE'
+    p[0] = p[2]
+
+
+def p_importacion(p):
+    '''importacion : IMPORT STRING_VALUE NEWLINE
+                   | empty'''
+    p[0] = p[2] if len(p) == 4 else None
+
+
+def p_declaraciones(p):
+    '''declaraciones : declaraciones declaracion
+                     | empty'''
+    if len(p) == 3:
+        p[0] = p[1] + ([p[2]] if p[2] is not None else [])
+    else:
+        p[0] = []
+
+
+def p_declaracion(p):
+    '''declaracion : decl_var fin
+                   | decl_const fin
+                   | decl_func'''
+    p[0] = p[1]
+
+
+def p_declaracion_error(p):
+    'declaracion : error NEWLINE'
+    _ctx['parser'].errok()
+    p[0] = None
+
+
+# --- const -------------------------------------------------------------------
+def p_decl_const(p):
+    'decl_const : CONST ID ASSIGN expr'
+    p[0] = Nodo('const', p.lineno(1), p[2], p[4])
+
+
+# --- switch con case y default ----------------------------------------------
+def p_sent_switch(p):
+    'sent_switch : SWITCH expr LBRACE casos RBRACE NEWLINE'
+    p[0] = Nodo('switch', p.lineno(1), p[2], p[4])
+
+
+def p_casos(p):
+    '''casos : casos caso
+             | empty'''
+    p[0] = [] if len(p) == 2 else p[1] + [p[2]]
+
+
+def p_caso(p):
+    '''caso : CASE lista_expr COLON sentencias
+            | DEFAULT COLON sentencias'''
+    if len(p) == 5:
+        p[0] = Nodo('case', p.lineno(1), p[2], p[4])
+    else:
+        p[0] = Nodo('default', p.lineno(1), p[3])
+
+
+# --- break y continue ---------------------------------------------------------
+def p_sent_break(p):
+    'sent_break : BREAK'
+    p[0] = Nodo('break', p.lineno(1))
+
+
+def p_sent_continue(p):
+    'sent_continue : CONTINUE'
+    p[0] = Nodo('continue', p.lineno(1))
+
+
+# --- Mapa: tipo, literal y acceso por clave (comparte la regla de índice) ----
+def p_tipo_mapa(p):
+    'tipo_mapa : MAP LBRACKET tipo_simple RBRACKET tipo_simple'
+    p[0] = 'map[%s]%s' % (p[3], p[5])
+
+
+def p_literal_mapa(p):
+    'literal : MAP LBRACKET tipo_simple RBRACKET tipo_simple LBRACE pares_opt RBRACE'
+    p[0] = Nodo('mapa', p.lineno(1), p[3], p[5], p[7])
+
+
+def p_pares_opt(p):
+    '''pares_opt : lista_pares
+                 | empty'''
+    p[0] = p[1] if p[1] is not None else []
+
+
+def p_lista_pares(p):
+    '''lista_pares : par
+                   | lista_pares COMMA par'''
+    p[0] = [p[1]] if len(p) == 2 else p[1] + [p[3]]
+
+
+def p_par(p):
+    'par : expr COLON expr'
+    p[0] = Nodo('par', _linea(p), p[1], p[3])
+
+
+# --- Función sin retorno --------------------------------------------------------
+def p_func_sin_retorno(p):
+    'decl_func : FUNC ID LPAREN parametros RPAREN bloque NEWLINE'
+    p[0] = Nodo('func', p.lineno(1), p[2], p[4], [], p[6])
+
+
+def p_sent_return_vacio(p):
+    'sent_return : RETURN'
+    p[0] = Nodo('return', p.lineno(1), [])
+
+
+# --- Impresión y lectura por teclado -------------------------------------------
+def p_sent_impresion(p):
+    'sent_simple : FMT DOT PRINTLN LPAREN lista_expr_opt RPAREN'
+    p[0] = Nodo('impresion', p.lineno(1), p[5])
+
+
+def p_sent_lectura(p):
+    'sent_simple : FMT DOT SCANLN LPAREN ADDR ID RPAREN'
+    p[0] = Nodo('lectura', p.lineno(1), p[6])
+
+
+# --- Errores Y3 (llave sin cerrar) y Y6 (token inesperado) ---------------------------
+def error_fin_de_archivo(c):
+    """Fin de archivo con algo sin cerrar: Y3 (llave), Y2 (paréntesis) o Y6."""
+    if c.llaves > 0:
+        _registrar('Y3', c.linea,
+                   "fin de archivo inesperado, falta '}'. Sugerencia: "
+                   "cierra el bloque abierto con '}'.")
+    elif c.parens > 0:
+        _registrar('Y2', c.linea,
+                   "se esperaba ')' antes del fin de archivo. "
+                   "Sugerencia: cierra el paréntesis abierto con ')'.")
+    else:
+        _registrar('Y6', c.linea,
+                   "fin de archivo inesperado. Sugerencia: revisa que la "
+                   "última sentencia esté completa.")
+
+
+def error_y3_funcion(c):
+    """Y3: empieza otra función sin haber cerrado la anterior con '}'."""
+    if c.tok.type == 'FUNC' and c.llaves > 0:
+        _registrar('Y3', c.linea_prev if c.corte else c.linea,
+                   "se encontró otra función antes de cerrar el bloque anterior, "
+                   "falta '}'. Sugerencia: cierra el bloque abierto con '}'.")
+        _cerrar_linea(c.fuente, c.tok)
+        return c.seguir_con(_sintetico('RBRACE', '}', c.tok))
+    return NO_APLICA
+
+
+def error_incompleto(c):
+    """Y6: la línea terminó en un operador, una coma, '(' ... (sentencia abierta)."""
+    if c.corte:
+        _registrar('Y6', c.linea_prev,
+                   "la sentencia está incompleta: termina en '%s'. Sugerencia: "
+                   "escribe lo que falta después de ese símbolo."
+                   % _texto_token(c.previo))
+        return None
+    return NO_APLICA
+
+
+def error_y6(c):
+    """Y6: token inesperado (caso general)."""
+    tok = c.tok
+    if tok.type == 'RBRACE' and c.llaves <= 0:
+        _registrar('Y6', c.linea,
+                   "token inesperado '}'. Sugerencia: sobra una llave de "
+                   "cierre o falta la que abre el bloque.")
+    elif tok.type == 'RPAREN' and c.parens <= 0:
+        _registrar('Y6', c.linea,
+                   "token inesperado ')'. Sugerencia: sobra un paréntesis de "
+                   "cierre o falta el que abre.")
+    else:
+        _registrar('Y6', c.linea,
+                   "token inesperado '%s'. Sugerencia: revisa la sentencia y "
+                   "la ubicación de ese símbolo." % _texto_token(tok))
+    return None
+# FIN aporte: Elkin Salazar
 
 
 # ===========================================================================

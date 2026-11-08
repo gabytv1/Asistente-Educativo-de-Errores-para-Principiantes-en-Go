@@ -186,8 +186,171 @@ class PruebasCesar(unittest.TestCase):
 # FIN aporte: César Balladares
 
 
+# INICIO aporte: Elkin Salazar
+class PruebasElkin(unittest.TestCase):
+
+    def test_estructura_del_programa(self):
+        arbol = sin_errores(self, 'package main\n\nimport "fmt"\n\nfunc main() {\n}\n')
+        self.assertEqual(arbol.hijos[0:2], ['main', '"fmt"'])
+        sin_errores(self, 'package main\n\nfunc main() {\n}\n')          # import opcional
+
+    def test_const_global_y_local(self):
+        arbol = sin_errores(self, programa('const MAX = 5', 'const PI = 3.14159\n\n'))
+        self.assertEqual(contar_construcciones(arbol)['const'], 2)
+
+    def test_switch_con_case_y_default(self):
+        arbol = sin_errores(self, programa(
+            'switch dia {\ncase 1:\n\tfmt.Println("Lunes")\ncase 2, 3:\n\tx++\ndefault:\n\tfmt.Println("Otro")\n}'))
+        sw = sentencias_main(arbol)[0]
+        self.assertEqual([c.tipo for c in sw.hijos[1]], ['case', 'case', 'default'])
+
+    def test_break_y_continue(self):
+        arbol = sin_errores(self, programa(
+            'for i := 0; i < 5; i++ {\n\tif i == 3 {\n\t\tbreak\n\t}\n\tcontinue\n}'))
+        cuenta = contar_construcciones(arbol)
+        self.assertEqual((cuenta['break'], cuenta['continue']), (1, 1))
+
+    def test_mapa_declaracion_y_acceso_por_clave(self):
+        arbol = sin_errores(self, programa(
+            'edades := map[string]int{"Ana": 20, "Luis": 22}\nvar m map[string]int = map[string]int{}\n'
+            'e := edades["Ana"]\nedades["Ana"] += 1'))
+        cuenta = contar_construcciones(arbol)
+        self.assertEqual((cuenta['mapa'], cuenta['par'], cuenta['indice']), (2, 2, 2))
+
+    def test_funcion_sin_retorno(self):
+        arbol = sin_errores(self, programa(
+            'saludar("Ana")', 'func saludar(nombre string) {\n\tfmt.Println(nombre)\n\treturn\n}\n\n'))
+        self.assertEqual(arbol.hijos[2][0].hijos[2], [])
+
+    def test_impresion_con_varios_argumentos_y_vacia(self):
+        arbol = sin_errores(self, programa('fmt.Println("Total:", total, a + 1)\nfmt.Println()'))
+        impresiones = [s for s in sentencias_main(arbol) if s.tipo == 'impresion']
+        self.assertEqual([len(i.hijos[0]) for i in impresiones], [3, 0])
+
+    def test_lectura_por_teclado(self):
+        arbol = sin_errores(self, programa('var edad int\nfmt.Scanln(&edad)'))
+        self.assertEqual(contar_construcciones(arbol)['lectura'], 1)
+
+    def test_Scanln_exige_ampersand(self):
+        self.assertEqual(errores(programa('fmt.Scanln(edad)')), ['Y6'])
+
+    def test_Y3_llave_sin_cerrar_al_final_del_archivo(self):
+        codigo = 'package main\n\nfunc main() {\n\ttotal := 0\n'
+        arbol, errs, _ = analizar(codigo)
+        self.assertEqual([e['codigo'] for e in errs], ['Y3'])
+        self.assertIn("falta '}'", errs[0]['mensaje'])
+        self.assertIn('[línea 4]', errs[0]['mensaje'])
+
+    def test_Y3_funcion_nueva_antes_de_cerrar_la_anterior(self):
+        codigo = 'package main\n\nfunc a() {\n\tx := 1\n\nfunc main() {\n}\n'
+        self.assertEqual(errores(codigo), ['Y3'])
+
+    def test_Y6_token_inesperado(self):
+        arbol, errs, _ = analizar(programa('total := := 5\nx := 1'))
+        self.assertEqual([e['codigo'] for e in errs], ['Y6'])
+        self.assertIn("token inesperado ':='", errs[0]['mensaje'])
+
+    def test_Y6_llave_o_parentesis_de_sobra(self):
+        self.assertEqual(errores(programa('x := 1') + '}\n'), ['Y6'])
+        self.assertIn("token inesperado ')'", analizar(programa('x := (1 + 2))'))[1][0]['mensaje'])
+
+    def test_Y6_sentencia_incompleta_se_reporta_en_su_linea(self):
+        arbol, errs, _ = analizar(programa('fmt.Println("a",\n)\nx := 1'))
+        self.assertEqual([e['codigo'] for e in errs], ['Y6'])
+        self.assertIn('[línea 6]', errs[0]['mensaje'])
+        self.assertIn("termina en ','", errs[0]['mensaje'])
 
 
+# FIN aporte: Elkin Salazar
+
+
+# INICIO aporte: Elkin Salazar (
+class PruebasIntegral(unittest.TestCase):
+    """Los tres algoritmos, los archivos de error y el log del Avance 2."""
+
+    def test_los_tres_algoritmos_no_tienen_errores_sintacticos(self):
+        for n in (1, 2, 3):
+            arbol, errs, lex = analizar(leer('algoritmos/algoritmo%d.go' % n))
+            self.assertEqual(errs, [], 'algoritmo%d.go' % n)
+            self.assertEqual(lex, [])
+            self.assertEqual(arbol.tipo, 'programa')
+
+    def test_los_algoritmos_cubren_las_reglas_minimas(self):
+        cuenta = {}
+        for n in (1, 2, 3):
+            for k, v in contar_construcciones(analizar(leer('algoritmos/algoritmo%d.go' % n))[0]).items():
+                cuenta[k] = cuenta.get(k, 0) + v
+        for tipo in ('impresion', 'lectura', 'aritmetica', 'logica', 'comparacion', 'var',
+                     'declare', 'const', 'asignacion', 'arreglo', 'slice', 'mapa', 'indice',
+                     'if', 'for_condicion', 'for_clasico', 'switch', 'func', 'llamada'):
+            self.assertGreater(cuenta.get(tipo, 0), 0, tipo)
+
+    def test_programa_de_la_propuesta(self):
+        codigo = ('package main\n\nimport "fmt"\n\nfunc suma(a int, b int) int {\n\treturn a + b\n}\n\n'
+                  'func main() {\n\tvar total int = suma(4, 5)\n\tfor i := 0; i < 3; i++ {\n'
+                  '\t\ttotal += i\n\t}\n\tfmt.Println("Total:", total)\n}\n')
+        sin_errores(self, codigo)
+
+    def test_archivos_de_error_producen_sus_codigos(self):
+        esperado = {
+            'errores/sintactico_fatima.go': ['Y1', 'Y5'],
+            'errores/sintactico_cesar.go': ['Y4', 'Y2'],
+            'errores/sintactico_elkin.go': ['Y6', 'Y3'],
+        }
+        for ruta, codigos in esperado.items():
+            arbol, errs, _ = analizar(leer(ruta))
+            self.assertEqual([e['codigo'] for e in errs], codigos, ruta)
+            self.assertIsNone(arbol)
+
+    def test_varios_errores_en_un_mismo_archivo(self):
+        src = programa('var edad\ntotal := := 5\nfmt.Println("a"\nfor i := 0; i < 3; i++\n{\n}')
+        self.assertEqual(errores(src), ['Y4', 'Y6', 'Y2', 'Y1'])
+
+    def test_los_errores_vienen_con_la_linea_correcta(self):
+        arbol, errs, _ = analizar(programa('x := 1\ntotal := := 5'))
+        self.assertEqual(errs[0]['linea'], 7)
+
+    def test_archivo_sin_salto_de_linea_final_y_con_saltos_de_windows(self):
+        sin_errores(self, 'package main\nfunc main() {\n}')
+        sin_errores(self, programa('x := 1\nif x > 0 {\n\tx++\n}').replace('\n', '\r\n'))
+
+    def test_comentarios_y_lineas_en_blanco_no_afectan(self):
+        sin_errores(self, 'package main\n\n// c1\n\n/* c2\n   c3 */\nfunc main() {\n\n\t// c4\n\tx := 1\n\n}\n')
+
+    def test_los_errores_lexicos_se_informan_aparte(self):
+        arbol, errs, lex = analizar(programa('x := 5 @ 3'))
+        self.assertEqual([e['codigo'] for e in lex], ['L1'])
+
+    def test_no_falla_ni_se_cuelga_con_codigo_truncado_o_roto(self):
+        base = leer('algoritmos/algoritmo3.go')
+        for corte in range(0, len(base), 97):
+            analizar(base[:corte])                    # no debe lanzar excepciones
+        for basura in ('', '\n\n', '}', '{', 'func', 'package', 'x := ', ')))', 'else'):
+            analizar(basura)
+
+    def test_nombre_y_contenido_del_log(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            ruta, arbol, errs, lex = main_sintactico.ejecutar(
+                os.path.join(RAIZ, 'errores/sintactico_fatima.go'), 'gabytv1', tmp)
+            self.assertRegex(os.path.basename(ruta),
+                             r'^sintactico-gabytv1-\d{8}-\d{2}h\d{2}\.txt$')
+            with open(ruta, encoding='utf-8') as f:
+                texto = f.read()
+            for esperado in ('ANÁLISIS SINTÁCTICO', 'Usuario Git   : gabytv1',
+                             'ERRORES SINTÁCTICOS', '[Y1]', '[Y5]', 'CON ERRORES'):
+                self.assertIn(esperado, texto)
+
+    def test_log_de_programa_correcto_lista_las_construcciones(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            ruta, arbol, errs, lex = main_sintactico.ejecutar(
+                os.path.join(RAIZ, 'algoritmos/algoritmo2.go'), 'CBalla-05', tmp)
+            with open(ruta, encoding='utf-8') as f:
+                texto = f.read()
+            self.assertIn('SINTAXIS CORRECTA', texto)
+            self.assertIn('CONSTRUCCIONES RECONOCIDAS', texto)
+            self.assertIn('Ingreso por teclado (fmt.Scanln)', texto)
+
+# FIN aporte: Elkin Salazar 
 
 
 if __name__ == '__main__':
