@@ -2,7 +2,7 @@ package main
 
 import "fmt"
 
-// Prueba de errores - César Balladares (L1, L2 y L3)
+// Prueba de errores - César Balladares (L1, L2 , L3, y L6)
 
 func main() {
 	x := 5 @ 3
