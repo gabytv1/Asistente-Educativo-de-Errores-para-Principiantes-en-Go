@@ -1,0 +1,42 @@
+==============================================================================
+ANÁLISIS SINTÁCTICO - Asistente Educativo de Errores para Go
+==============================================================================
+Usuario Git   : sElkinEspol
+Archivo       : algoritmos/algoritmo3.go
+Fecha y hora  : 08-11-2026 16:26
+==============================================================================
+
+ERRORES SINTÁCTICOS
+------------------------------------------------------------------------------
+(ninguno)
+
+CONSTRUCCIONES RECONOCIDAS
+------------------------------------------------------------------------------
+  Impresión (fmt.Println)                              14
+  Ingreso por teclado (fmt.Scanln)                     2
+  Expresiones aritméticas (operadores + - * / %)       7
+  Comparaciones (== != < <= > >=)                      13
+  Conectores lógicos (&& ||)                           3
+  Negación (!)                                         1
+  Declaración con var                                  5
+  Declaración corta (:=)                               13
+  Constantes (const)                                   5
+  Asignaciones (=, +=, -=)                             8
+  Incremento/decremento (++, --)                       3
+  Literales de mapa                                    2
+  Accesos por índice o clave                           7
+  Estructuras if / if-else                             7
+  Estructuras for con condición                        1
+  Estructuras for clásico                              2
+  Estructuras switch                                   1
+  break                                                1
+  continue                                             1
+  Definiciones de función                              3
+  Llamadas a función                                   2
+  return                                               1
+
+RESUMEN
+------------------------------------------------------------------------------
+Errores sintácticos : 0
+Errores léxicos     : 0
+Resultado           : SINTAXIS CORRECTA

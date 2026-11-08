@@ -1,0 +1,18 @@
+==============================================================================
+ANÁLISIS SINTÁCTICO - Asistente Educativo de Errores para Go
+==============================================================================
+Usuario Git   : Elkin
+Archivo       : errores/sintactico_elkin.go
+Fecha y hora  : 08-11-2026 16:28
+==============================================================================
+
+ERRORES SINTÁCTICOS
+------------------------------------------------------------------------------
+[Y6] Error sintáctico [línea 8]: token inesperado ':='. Sugerencia: revisa la sentencia y la ubicación de ese símbolo.
+[Y3] Error sintáctico [línea 12]: fin de archivo inesperado, falta '}'. Sugerencia: cierra el bloque abierto con '}'.
+
+RESUMEN
+------------------------------------------------------------------------------
+Errores sintácticos : 2
+Errores léxicos     : 0
+Resultado           : CON ERRORES
