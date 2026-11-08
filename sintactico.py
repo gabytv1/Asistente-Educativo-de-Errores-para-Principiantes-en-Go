@@ -282,6 +282,187 @@ def error_y5(c):
 #    clásico), slice, función con dos retornos, llamada a función.
 #    Mensajes Y2 (paréntesis sin cerrar) y Y4 (declaración incompleta).
 # ===========================================================================
+# INICIO aporte: César Balladares
+# --- Declaración corta ------------------------------------------------------
+def p_sent_declare(p):
+    '''sent_simple : ID DECLARE expr
+                   | lista_id DECLARE lista_expr'''
+    if isinstance(p[1], list):
+        p[0] = Nodo('declare', _linea(p), p[1], p[3])
+    else:
+        p[0] = Nodo('declare', p.lineno(1), [p[1]], [p[3]])
+
+
+def p_lista_id(p):
+    '''lista_id : ID COMMA ID
+                | lista_id COMMA ID'''
+    p[0] = [p[1], p[3]] if len(p) == 4 and not isinstance(p[1], list) else p[1] + [p[3]]
+
+
+# --- Asignación y operadores compuestos -----------------------------------
+def p_lvalue(p):
+    '''lvalue : ID
+              | ID LBRACKET expr RBRACKET'''
+    if len(p) == 2:
+        p[0] = Nodo('id', p.lineno(1), p[1])
+    else:
+        p[0] = Nodo('indice', p.lineno(1), p[1], p[3])
+
+
+def p_sent_asignacion(p):
+    '''sent_simple : lvalue ASSIGN expr
+                   | lvalue PLUS_ASSIGN expr
+                   | lvalue MINUS_ASSIGN expr'''
+    p[0] = Nodo('asignacion', _linea(p), p[2], p[1], p[3])
+
+
+def p_sent_incremento(p):
+    '''sent_simple : lvalue INC
+                   | lvalue DEC'''
+    p[0] = Nodo('incdec', _linea(p), p[2], p[1])
+
+
+# --- Expresiones aritméticas ------------------------------------------------
+def p_expr_aritmetica(p):
+    '''expr : expr PLUS expr
+            | expr MINUS expr
+            | expr TIMES expr
+            | expr DIVIDE expr
+            | expr MOD expr'''
+    p[0] = Nodo('aritmetica', _linea(p), p[2], p[1], p[3])
+
+
+def p_expr_menos_unario(p):
+    'expr : MINUS expr %prec UMINUS'
+    p[0] = Nodo('menos_unario', p.lineno(1), p[2])
+
+
+def p_expr_parentesis(p):
+    'expr : LPAREN expr RPAREN'
+    p[0] = p[2]
+
+
+# --- for con condición y for clásico ----------------------------------------
+def p_sent_for_condicion(p):
+    'sent_for : FOR expr bloque NEWLINE'
+    p[0] = Nodo('for_condicion', p.lineno(1), p[2], p[3])
+
+
+def p_sent_for_clasico(p):
+    'sent_for : FOR sent_simple SEMICOLON expr SEMICOLON sent_simple bloque NEWLINE'
+    p[0] = Nodo('for_clasico', p.lineno(1), p[2], p[4], p[6], p[7])
+
+
+# --- Slice ------------------------------------------------------------------
+def p_tipo_slice(p):
+    'tipo_slice : LBRACKET RBRACKET tipo_simple'
+    p[0] = '[]%s' % p[3]
+
+
+def p_literal_slice(p):
+    'literal : LBRACKET RBRACKET tipo_simple LBRACE lista_expr_opt RBRACE'
+    p[0] = Nodo('slice', p.lineno(1), p[3], p[5])
+
+
+# --- Función con dos valores de retorno -------------------------------------
+def p_func_dos_retornos(p):
+    'decl_func : FUNC ID LPAREN parametros RPAREN LPAREN tipo_dato COMMA tipo_dato RPAREN bloque NEWLINE'
+    p[0] = Nodo('func', p.lineno(1), p[2], p[4], [p[7], p[9]], p[11])
+
+
+def p_sent_return_doble(p):
+    'sent_return : RETURN expr COMMA expr'
+    p[0] = Nodo('return', p.lineno(1), [p[2], p[4]])
+
+
+# --- Llamada a función (como expresión y como sentencia) --------------------
+def p_llamada(p):
+    'llamada : ID LPAREN lista_expr_opt RPAREN'
+    p[0] = Nodo('llamada', p.lineno(1), p[1], p[3])
+
+
+def p_sent_llamada(p):
+    'sent_simple : llamada'
+    p[0] = p[1]
+
+
+# --- Errores Y2 (paréntesis sin cerrar) y Y4 (declaración incompleta) -------------
+def error_y2(c):
+    """Y2: falta ')' (la línea terminó, o llegó '{' o ';', con un '(' abierto)."""
+    if c.parens > 0 and (c.es_nl or c.tok.type in ('LBRACE', 'SEMICOLON')):
+        _registrar('Y2', c.linea,
+                   "se esperaba ')' antes del fin de línea. Sugerencia: cierra "
+                   "la llamada con ')'.")
+        c.fuente.devolver(c.tok)
+        return c.seguir_con(_sintetico('RPAREN', ')', c.tok))
+    return NO_APLICA
+
+
+def error_y4(c):
+    """Y4: declaración incompleta (falta el tipo o el valor)."""
+    pila, valores, tok = c.pila, c.valores, c.tok
+    # var edad            /  var edad = 5   -> falta el tipo
+    if pila[-2:] == ['VAR', 'ID'] and (c.es_nl or tok.type in ('ASSIGN', 'SEMICOLON')):
+        nombre = valores[-1]
+        _registrar('Y4', c.linea,
+                   "falta el tipo en la declaración de '%s'. Sugerencia: "
+                   "escribe el tipo, por ejemplo var %s int." % (nombre, nombre))
+        c.fuente.devolver(tok)
+        return c.seguir_con(_sintetico('TYPE_INT', 'int', tok))
+    # total :=   /   var edad int =   /   const MAX =   -> falta el valor
+    falta_valor = None
+    if pila[-2:] == ['ID', 'DECLARE']:
+        falta_valor = ("falta el valor en la declaración de '%s'. Sugerencia: "
+                       "escribe una expresión después de ':='." % valores[-2])
+    elif pila[-1:] == ['ASSIGN'] and len(pila) >= 4 and pila[-4] == 'VAR':
+        falta_valor = ("falta el valor en la declaración de '%s'. Sugerencia: "
+                       "escribe una expresión después de '='." % valores[-3])
+    elif pila[-3:] == ['CONST', 'ID', 'ASSIGN']:
+        falta_valor = ("falta el valor en la declaración de la constante '%s'. "
+                       "Sugerencia: escribe una expresión después de '='." % valores[-2])
+    if falta_valor and (c.es_nl or c.corte):
+        _registrar('Y4', c.linea_prev, falta_valor)
+        _cerrar_linea(c.fuente, tok)
+        return c.seguir_con(_sintetico('INTEGER_VALUE', '0', tok))
+    if c.es_nl and pila[-2:] == ['CONST', 'ID']:
+        _registrar('Y4', c.linea,
+                   "falta el valor en la declaración de la constante '%s'. "
+                   "Sugerencia: escribe const %s = <valor>." % (valores[-1], valores[-1]))
+        return None
+    return NO_APLICA
+
+
+def error_incompleto_oculto(c):
+    """Sentencia incompleta cuya línea siguiente 'se pegó' a ella.
+
+    Ej.: 'total :=' y debajo 'x := 1': el parser lee 'total := x' y falla en el
+    segundo ':='. Se reporta la línea que quedó incompleta (Y4 o Y6).
+    """
+    h = c.hist
+    if not (not c.es_nl and len(h) >= 3 and h[-3].type in _TERMINAN_INCOMPLETO
+            and c.previo.lineno > h[-3].lineno and c.tok.lineno == c.previo.lineno):
+        return NO_APLICA
+    corte, pila, valores = h[-3], c.pila, c.valores
+    if corte.type == 'DECLARE' and len(h) >= 4 and h[-4].type == 'ID':
+        _registrar('Y4', corte.lineno,
+                   "falta el valor en la declaración de '%s'. Sugerencia: "
+                   "escribe una expresión después de ':='." % h[-4].value)
+    elif (corte.type == 'ASSIGN' and len(pila) >= 5
+          and pila[-5:-3] == ['VAR', 'ID'] and pila[-2] == 'ASSIGN'):
+        _registrar('Y4', corte.lineno,
+                   "falta el valor en la declaración de '%s'. Sugerencia: "
+                   "escribe una expresión después de '='." % valores[-4])
+    elif (corte.type == 'ASSIGN' and len(pila) >= 4
+          and pila[-4:-2] == ['CONST', 'ID'] and pila[-2] == 'ASSIGN'):
+        _registrar('Y4', corte.lineno,
+                   "falta el valor en la declaración de la constante '%s'. "
+                   "Sugerencia: escribe una expresión después de '='." % valores[-3])
+    else:
+        _registrar('Y6', corte.lineno,
+                   "la sentencia está incompleta: termina en '%s'. Sugerencia: "
+                   "escribe lo que falta después de ese símbolo." % _texto_token(corte))
+    return None
+# FIN aporte: César Balladares
 
 
 # ===========================================================================
