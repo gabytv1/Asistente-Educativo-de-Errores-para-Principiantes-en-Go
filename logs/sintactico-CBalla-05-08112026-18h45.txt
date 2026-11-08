@@ -1,0 +1,18 @@
+==============================================================================
+ANÁLISIS SINTÁCTICO - Asistente Educativo de Errores para Go
+==============================================================================
+Usuario Git   : CBalla-05
+Archivo       : errores/sintactico_cesar.go
+Fecha y hora  : 08-11-2026 18:45
+==============================================================================
+
+ERRORES SINTÁCTICOS
+------------------------------------------------------------------------------
+[Y4] Error sintáctico [línea 8]: falta el tipo en la declaración de 'total'. Sugerencia: escribe el tipo, por ejemplo var total int.
+[Y2] Error sintáctico [línea 9]: se esperaba ')' antes del fin de línea. Sugerencia: cierra la llamada con ')'.
+
+RESUMEN
+------------------------------------------------------------------------------
+Errores sintácticos : 2
+Errores léxicos     : 0
+Resultado           : CON ERRORES
