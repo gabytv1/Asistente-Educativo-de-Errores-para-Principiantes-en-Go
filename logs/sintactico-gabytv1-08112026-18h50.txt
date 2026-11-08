@@ -1,0 +1,18 @@
+==============================================================================
+ANÁLISIS SINTÁCTICO - Asistente Educativo de Errores para Go
+==============================================================================
+Usuario Git   : gabytv1
+Archivo       : errores/sintactico_fatima.go
+Fecha y hora  : 08-11-2026 18:50
+==============================================================================
+
+ERRORES SINTÁCTICOS
+------------------------------------------------------------------------------
+[Y1] Error sintáctico [línea 9]: token inesperado NEWLINE al final de la condición del if. Sugerencia: abre el bloque con '{' en la misma línea del if.
+[Y5] Error sintáctico [línea 15]: 'else' debe ir en la misma línea que la llave de cierre del if. Sugerencia: escribe } else {.
+
+RESUMEN
+------------------------------------------------------------------------------
+Errores sintácticos : 2
+Errores léxicos     : 0
+Resultado           : CON ERRORES

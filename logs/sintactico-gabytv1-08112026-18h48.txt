@@ -1,0 +1,43 @@
+==============================================================================
+ANÁLISIS SINTÁCTICO - Asistente Educativo de Errores para Go
+==============================================================================
+Usuario Git   : gabytv1
+Archivo       : algoritmos/algoritmo1.go
+Fecha y hora  : 08-11-2026 18:48
+==============================================================================
+
+ERRORES SINTÁCTICOS
+------------------------------------------------------------------------------
+(ninguno)
+
+CONSTRUCCIONES RECONOCIDAS
+------------------------------------------------------------------------------
+  Impresión (fmt.Println)                              8
+  Ingreso por teclado (fmt.Scanln)                     1
+  Expresiones aritméticas (operadores + - * / %)       5
+  Comparaciones (== != < <= > >=)                      12
+  Conectores lógicos (&& ||)                           3
+  Negación (!)                                         1
+  Declaración con var                                  8
+  Declaración corta (:=)                               7
+  Constantes (const)                                   2
+  Asignaciones (=, +=, -=)                             3
+  Incremento/decremento (++, --)                       4
+  Literales de arreglo                                 1
+  Literales de mapa                                    1
+  Accesos por índice o clave                           3
+  Estructuras if / if-else                             6
+  Estructuras for con condición                        2
+  Estructuras for clásico                              1
+  Estructuras switch                                   1
+  break                                                1
+  continue                                             1
+  Definiciones de función                              2
+  Llamadas a función                                   1
+  return                                               3
+
+RESUMEN
+------------------------------------------------------------------------------
+Errores sintácticos : 0
+Errores léxicos     : 0
+Resultado           : SINTAXIS CORRECTA
