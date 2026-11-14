@@ -306,5 +306,173 @@ class PruebasElkin(unittest.TestCase):
 # FIN aporte: Elkin Salazar
 
 
+# INICIO aporte: César Balladares
+class PruebasCesar(unittest.TestCase):
+    """S3 (tipo del valor asignado) y S4 (retorno de funciones)."""
+
+    # --- S3 ---
+    def test_s3_mensaje_de_la_propuesta(self):
+        cuerpo = 'var edad int = "veinte"\nfmt.Println(edad)'
+        self.assertEqual(mensajes(programa(cuerpo)), [
+            "Error semántico [línea 6]: no se puede asignar string a 'edad' de tipo int. "
+            "Sugerencia: usa un valor entero."])
+
+    def test_s3_literal_entero_en_variable_float64(self):
+        cuerpo = 'var x float64 = 3\nx = 4\nfmt.Println(x)'
+        self.assertEqual(codigos(programa(cuerpo)), [])
+
+    def test_s3_variable_entera_en_variable_float64_es_error(self):
+        cuerpo = 'n := 3\nvar x float64 = n\nfmt.Println(x)'
+        self.assertEqual(mensajes(programa(cuerpo)), [
+            "Error semántico [línea 7]: no se puede asignar int a 'x' de tipo float64. "
+            "Sugerencia: usa un valor decimal (float64)."])
+
+    def test_s3_texto_no_se_adapta_a_un_numero(self):
+        self.assertEqual(codigos(programa('var s string = 5\nfmt.Println(s)')), ['S3'])
+
+    def test_s3_argumento_literal_entero_a_parametro_float64(self):
+        extra = 'func mitad(a float64) float64 {\n\treturn a / 2\n}\n'
+        self.assertEqual(codigos(programa('fmt.Println(mitad(3))', extra)), [])
+
+    def test_s3_argumento_variable_entera_a_parametro_float64(self):
+        extra = 'func mitad(a float64) float64 {\n\treturn a / 2\n}\n'
+        self.assertEqual(codigos(programa('n := 3\nfmt.Println(mitad(n))', extra)), ['S3'])
+
+    def test_s3_elementos_literales_en_slice_y_mapa_float64(self):
+        cuerpo = 'v := []float64{1, 2.5, 3}\nm := map[string]float64{"a": 1}\nfmt.Println(v, m)'
+        self.assertEqual(codigos(programa(cuerpo)), [])
+
+    def test_s4_return_literal_entero_en_funcion_float64(self):
+        extra = 'func uno() float64 {\n\treturn 1\n}\n'
+        self.assertEqual(codigos(programa('fmt.Println(uno())', extra)), [])
+
+    def test_s4_return_variable_entera_en_funcion_float64(self):
+        extra = 'func conv(n int) float64 {\n\treturn n\n}\n'
+        self.assertEqual(codigos(programa('fmt.Println(conv(1))', extra)), ['S4'])
+
+    def test_s3_declaraciones_correctas(self):
+        cuerpo = ('var a int = 1\nvar b float64 = 1.5\nvar c string = "x"\n'
+                  'var d bool = true\nvar e [2]int = [2]int{1, 2}\nfmt.Println(a, b, c, d, e)')
+        self.assertEqual(codigos(programa(cuerpo)), [])
+
+    def test_s3_tipo_deducido_con_declaracion_corta(self):
+        cuerpo = 'x := 5\nx = "hola"\nfmt.Println(x)'
+        self.assertEqual(mensajes(programa(cuerpo)), [
+            "Error semántico [línea 7]: no se puede asignar string a 'x' de tipo int. "
+            "Sugerencia: usa un valor entero."])
+
+    def test_s3_asignacion_correcta(self):
+        self.assertEqual(codigos(programa('x := 5\nx = 7\ns := "a"\ns = "b"')), [])
+
+    def test_s3_elemento_de_literal_slice_y_arreglo(self):
+        self.assertEqual(codigos(programa('v := []int{1, "a"}\nfmt.Println(v)')), ['S3'])
+        self.assertEqual(codigos(programa('v := [2]string{"a", 1}\nfmt.Println(v)')), ['S3'])
+
+    def test_s3_clave_y_valor_de_literal_mapa(self):
+        self.assertEqual(codigos(programa('m := map[string]int{"a": "b"}\nfmt.Println(m)')), ['S3'])
+        self.assertEqual(codigos(programa('m := map[string]int{1: 2}\nfmt.Println(m)')), ['S3'])
+
+    def test_s3_asignar_a_un_elemento(self):
+        cuerpo = 'v := []int{1}\nv[0] = "a"\nfmt.Println(v)'
+        errs = mensajes(programa(cuerpo))
+        self.assertEqual(len(errs), 1)
+        self.assertIn("a un elemento de 'v' de tipo int", errs[0])
+
+    def test_s3_argumento_de_tipo_incorrecto(self):
+        errs = mensajes(programa('x := suma("a", 2)\nfmt.Println(x)', F_SUMA))
+        self.assertEqual(len(errs), 1)
+        self.assertIn("no se puede pasar string como argumento 'a' de tipo int "
+                      "a la función 'suma'", errs[0])
+
+    def test_s3_cantidad_de_argumentos(self):
+        errs = mensajes(programa('x := suma(1)\nfmt.Println(x)', F_SUMA))
+        self.assertEqual(len(errs), 1)
+        self.assertIn("la función 'suma' espera 2 argumentos, pero recibe 1", errs[0])
+
+    def test_s3_declaracion_multiple_cantidad(self):
+        self.assertEqual(codigos(programa('a, b := 1\nfmt.Println(a, b)')), ['S3'])
+        self.assertEqual(codigos(programa('a, b := 1, 2\nfmt.Println(a, b)')), [])
+
+    def test_s3_declaracion_con_llamada_de_dos_retornos(self):
+        self.assertEqual(codigos(programa('c, m := dividir(17, 5)\nfmt.Println(c, m)',
+                                          F_DIVIDIR)), [])
+        errs = mensajes(programa('x := dividir(1, 2)\nfmt.Println(x)', F_DIVIDIR))
+        self.assertEqual(len(errs), 1)
+        self.assertIn("la función 'dividir' devuelve 2 valores", errs[0])
+        self.assertEqual(codigos(programa('a, b := suma(1, 2)\nfmt.Println(a, b)', F_SUMA)),
+                         ['S3'])
+
+    def test_s3_asignar_resultado_de_funcion_sin_retorno(self):
+        errs = mensajes(programa('x := saludar("a")\nfmt.Println(x)', F_SALUDAR))
+        self.assertEqual(len(errs), 1)
+        self.assertIn("la función 'saludar' porque no devuelve ningún valor", errs[0])
+        self.assertEqual(codigos(programa('var y int = saludar("a")\nfmt.Println(y)',
+                                          F_SALUDAR)), ['S3'])
+
+    def test_s3_no_se_encadena_con_s1(self):
+        self.assertEqual(codigos(programa('var x int = y + 1\nfmt.Println(x)')), ['S1'])
+
+    # --- S4 ---
+    def test_s4_mensaje_de_la_propuesta(self):
+        extra = 'func suma(a int, b int) int {\n\treturn "ok"\n}\n'
+        self.assertEqual(mensajes(programa('fmt.Println(suma(1, 2))', extra)), [
+            "Error semántico [línea 6]: la función 'suma' debe retornar int, pero "
+            "retorna string. Sugerencia: devuelve un entero."])
+
+    def test_s4_return_correcto(self):
+        self.assertEqual(codigos(programa('fmt.Println(suma(1, 2))', F_SUMA)), [])
+
+    def test_s4_menos_valores_de_los_declarados(self):
+        extra = 'func d(a int) (int, int) {\n\treturn a\n}\n'
+        errs = mensajes(programa('x, y := d(1)\nfmt.Println(x, y)', extra))
+        self.assertEqual(len(errs), 1)
+        self.assertIn("debe retornar 2 valores (int, int), pero retorna 1 valor", errs[0])
+
+    def test_s4_mas_valores_de_los_declarados(self):
+        extra = 'func d(a int) int {\n\treturn a, a\n}\n'
+        self.assertEqual(codigos(programa('fmt.Println(d(1))', extra)), ['S4'])
+
+    def test_s4_valor_en_funcion_sin_retorno(self):
+        extra = 'func f() {\n\treturn 1\n}\n'
+        errs = mensajes(programa('f()', extra))
+        self.assertEqual(len(errs), 1)
+        self.assertIn("la función 'f' no devuelve ningún valor, pero retorna 1", errs[0])
+
+    def test_s4_return_vacio_en_funcion_con_retorno(self):
+        extra = 'func f() int {\n\treturn\n}\n'
+        self.assertEqual(codigos(programa('fmt.Println(f())', extra)), ['S4'])
+
+    def test_s4_tipo_incorrecto_en_la_segunda_posicion(self):
+        extra = 'func d(a int) (int, int) {\n\treturn 1, "x"\n}\n'
+        errs = mensajes(programa('x, y := d(1)\nfmt.Println(x, y)', extra))
+        self.assertEqual(len(errs), 1)
+        self.assertIn("debe retornar int en la posición 2, pero retorna string", errs[0])
+
+    def test_s4_return_de_una_llamada_con_dos_valores(self):
+        extra = F_DIVIDIR + 'func g() (int, int) {\n\treturn dividir(4, 2)\n}\n'
+        self.assertEqual(codigos(programa('a, b := g()\nfmt.Println(a, b)', extra)), [])
+
+    def test_s4_falta_el_return_final(self):
+        extra = 'func n(a int) int {\n\tif a > 0 {\n\t\treturn 1\n\t}\n}\n'
+        errs = semantica(programa('fmt.Println(n(1))', extra))
+        self.assertEqual([(e['codigo'], e['linea']) for e in errs], [('S4', 5)])
+        self.assertIn("debe terminar con un return de int", errs[0]['mensaje'])
+
+    def test_s4_if_else_que_retorna_en_ambas_ramas(self):
+        extra = ('func signo(a int) int {\n\tif a >= 0 {\n\t\treturn 1\n\t} else {\n'
+                 '\t\treturn -1\n\t}\n}\n')
+        self.assertEqual(codigos(programa('fmt.Println(signo(3))', extra)), [])
+
+    def test_s4_switch_con_default_que_retorna_en_todos_los_casos(self):
+        extra = ('func nombre(d int) string {\n\tswitch d {\n\tcase 1:\n\t\treturn "uno"\n'
+                 '\tdefault:\n\t\treturn "otro"\n\t}\n}\n')
+        self.assertEqual(codigos(programa('fmt.Println(nombre(1))', extra)), [])
+
+    def test_s4_switch_sin_default_no_termina(self):
+        extra = ('func nombre(d int) string {\n\tswitch d {\n\tcase 1:\n\t\treturn "uno"\n\t}\n}\n')
+        self.assertEqual(codigos(programa('fmt.Println(nombre(1))', extra)), ['S4'])
+# FIN aporte: César Balladares
+
+
 if __name__ == '__main__':
     unittest.main()
