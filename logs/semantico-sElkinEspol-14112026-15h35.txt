@@ -1,0 +1,33 @@
+==============================================================================
+ANÁLISIS SEMÁNTICO - Asistente Educativo de Errores para Go
+==============================================================================
+Usuario Git   : sElkinEspol
+Archivo       : errores/semantico_elkin.go
+Fecha y hora  : 14-11-2026 15:35
+==============================================================================
+
+ESTADO DE LOS ANÁLISIS PREVIOS
+------------------------------------------------------------------------------
+Análisis léxico     : sin errores
+Análisis sintáctico : sin errores
+
+ERRORES SEMÁNTICOS
+------------------------------------------------------------------------------
+[S5] Error semántico [línea 8]: operación '+' inválida entre int y float64. Sugerencia: usa el mismo tipo en ambos lados.
+[S6] Error semántico [línea 10]: 'break' fuera de un bucle o switch. Sugerencia: muévelo dentro de un for.
+
+TABLA DE SÍMBOLOS (nombre, tipo, constante, ámbito, línea)
+------------------------------------------------------------------------------
+  main           func()                               no         global                   5
+  a              int                                  no         función main             6
+  b              float64                              no         función main             7
+  c              (desconocido)                        no         función main             8
+
+RESUMEN
+------------------------------------------------------------------------------
+Errores léxicos     : 0
+Errores sintácticos : 0
+Errores semánticos  : 2
+  S5 Operaciones permitidas     1
+  S6 Estructuras de control     1
+Resultado           : CON ERRORES SEMÁNTICOS

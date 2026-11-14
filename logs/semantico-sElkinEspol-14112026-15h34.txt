@@ -1,0 +1,55 @@
+==============================================================================
+ANÁLISIS SEMÁNTICO - Asistente Educativo de Errores para Go
+==============================================================================
+Usuario Git   : sElkinEspol
+Archivo       : algoritmos/algoritmo3.go
+Fecha y hora  : 14-11-2026 15:34
+==============================================================================
+
+ESTADO DE LOS ANÁLISIS PREVIOS
+------------------------------------------------------------------------------
+Análisis léxico     : sin errores
+Análisis sintáctico : sin errores
+
+ERRORES SEMÁNTICOS
+------------------------------------------------------------------------------
+(ninguno)
+
+TABLA DE SÍMBOLOS (nombre, tipo, constante, ámbito, línea)
+------------------------------------------------------------------------------
+  mostrarMenu    func(titulo string)                  no         global                   18
+  calcularTotal  func(precio int, cantidad int) int   no         global                   23
+  main           func()                               no         global                   31
+  TIENDA         string                               sí         global                   12
+  MINIMO         int                                  sí         global                   13
+  DESCUENTO      int                                  sí         global                   14
+  ENVIO          int                                  sí         global                   15
+  IVA            float64                              sí         global                   16
+  titulo         string                               no         función mostrarMenu      18
+  precio         int                                  no         función calcularTotal    23
+  cantidad       int                                  no         función calcularTotal    23
+  total          int                                  no         función calcularTotal    24
+  precios        map[string]int                       no         función main             34
+  stock          map[string]int                       no         función main             35
+  opcion         int                                  no         función main             37
+  cantidad       int                                  no         función main             38
+  nombre         string                               no         función main             46
+  promo          bool                                 no         función main             56
+  valido         bool                                 no         función main             61
+  total          int                                  no         bloque (línea 63)        64
+  totalFinal     int                                  no         bloque (línea 63)        65
+  ahorro         int                                  no         bloque (línea 63)        66
+  paquetes       int                                  no         función main             80
+  sueltos        int                                  no         función main             81
+  restantes      int                                  no         for (línea 84)           84
+  i              int                                  no         for (línea 88)           88
+  pendientes     int                                  no         función main             95
+  viajes         int                                  no         función main             96
+  porcentajeIva  float64                              no         función main             106
+
+RESUMEN
+------------------------------------------------------------------------------
+Errores léxicos     : 0
+Errores sintácticos : 0
+Errores semánticos  : 0
+Resultado           : SEMÁNTICA CORRECTA
