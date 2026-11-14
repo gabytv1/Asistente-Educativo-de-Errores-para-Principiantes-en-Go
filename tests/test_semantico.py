@@ -474,5 +474,70 @@ class PruebasCesar(unittest.TestCase):
 # FIN aporte: César Balladares
 
 
+# INICIO aporte: Elkin Salazar
+class PruebasIntegral(unittest.TestCase):
+    """Los algoritmos, los archivos de error y el conjunto de las seis reglas."""
+
+    def test_los_tres_algoritmos_no_tienen_errores_semanticos(self):
+        for n in (1, 2, 3):
+            with self.subTest(algoritmo=n):
+                self.assertEqual(mensajes(leer('algoritmos/algoritmo%d.go' % n)), [])
+
+    def test_archivos_de_error_producen_sus_reglas_en_la_linea_esperada(self):
+        esperado = {
+            'fatima': [('S2', 9), ('S1', 10)],
+            'cesar': [('S4', 6), ('S3', 10)],
+            'elkin': [('S5', 8), ('S6', 10)],
+        }
+        for quien, reglas in esperado.items():
+            with self.subTest(archivo=quien):
+                errs = semantica(leer('errores/semantico_%s.go' % quien))
+                self.assertEqual([(e['codigo'], e['linea']) for e in errs], reglas)
+
+    def test_varios_errores_en_un_archivo_salen_ordenados_por_linea(self):
+        cuerpo = ('const PI = 3.14\nPI = 3\nvar edad int = "veinte"\n'
+                  'c := edad + 1.5\nbreak\nfmt.Println(total)')
+        errs = semantica(programa(cuerpo))
+        self.assertEqual([e['codigo'] for e in errs], ['S2', 'S3', 'S5', 'S6', 'S1'])
+        self.assertEqual([e['linea'] for e in errs], sorted(e['linea'] for e in errs))
+
+    def test_cada_error_trae_su_categoria(self):
+        categorias = {'S1': 'Identificadores', 'S2': 'Constantes',
+                      'S3': 'Asignación de tipo', 'S4': 'Retorno de funciones',
+                      'S5': 'Operaciones permitidas', 'S6': 'Estructuras de control'}
+        for quien in ('fatima', 'cesar', 'elkin'):
+            for e in semantica(leer('errores/semantico_%s.go' % quien)):
+                self.assertEqual(e['categoria'], categorias[e['codigo']])
+                self.assertTrue(e['mensaje'].startswith('Error semántico [línea %d]:' % e['linea']))
+                self.assertIn('Sugerencia:', e['mensaje'])
+
+    def test_tabla_de_simbolos_por_ambitos(self):
+        arbol, _, _ = PARSER.analizar(leer('algoritmos/algoritmo3.go'))
+        analizador = AnalizadorSemantico()
+        analizador.analizar(arbol)
+        tabla = {(s.nombre, s.ambito): s for s in analizador.simbolos}
+        self.assertTrue(tabla[('MINIMO', 'global')].es_const)
+        self.assertEqual(tabla[('MINIMO', 'global')].tipo, 'int')
+        self.assertEqual(tabla[('precio', 'función calcularTotal')].tipo, 'int')
+        self.assertEqual(tabla[('precios', 'función main')].tipo, 'map[string]int')
+        self.assertTrue(tabla[('calcularTotal', 'global')].es_funcion)
+        self.assertGreater(tabla[('calcularTotal', 'global')].linea, 0)
+
+    def test_arbol_nulo_no_produce_errores(self):
+        self.assertEqual(AnalizadorSemantico().analizar(None), [])
+
+    def test_el_analizador_se_puede_reutilizar(self):
+        analizador = AnalizadorSemantico()
+        arbol, _, _ = PARSER.analizar(leer('errores/semantico_fatima.go'))
+        self.assertEqual(len(analizador.analizar(arbol)), 2)
+        self.assertEqual(len(analizador.analizar(arbol)), 2)
+
+    def test_programa_valido_en_go_con_literales_enteros_y_float64(self):
+        cuerpo = ('const N = 10\ntotal := 0.0\nfor i := 0; i < N; i++ {\n\ttotal += 1\n}\n'
+                  'var prom float64 = 0\nprom = total / 2\nfmt.Println(total, prom)')
+        self.assertEqual(codigos(programa(cuerpo)), [])
+# FIN aporte: Elkin Salazar
+
+
 if __name__ == '__main__':
     unittest.main()
