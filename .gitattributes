@@ -1,0 +1,5 @@
+# Unifica los finales de línea (evita archivos "modificados" por CRLF/LF entre Windows y Git)
+* text=auto eol=lf
+*.png binary
+*.pdf binary
+*.zip binary
