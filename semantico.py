@@ -495,32 +495,231 @@ class _ReglasElkin:
 # ===========================================================================
 # INICIO aporte: César Balladares
 class _ReglasCesar:
-    """Interfaz acordada. Pendiente de César Balladares: S3 (tipo del valor
-    asignado) y S4 (retorno de funciones). Su commit reemplaza esta clase."""
-
     def _iniciar_cesar(self):
         pass
 
+    # --- S3: asignación de tipo -------------------------------------------
     def s3_asignar(self, linea, destino, tdest, tval):
-        pass
+        """Un valor de tipo 'tval' se asigna a 'destino' (de tipo 'tdest')."""
+        if isinstance(tval, tuple):
+            if not tval:
+                self._registrar('S3', linea,
+                                "no se puede asignar a %s el resultado de una "
+                                "función que no devuelve ningún valor. "
+                                "Sugerencia: usa una función que devuelva un "
+                                "valor." % destino)
+            else:
+                self._registrar('S3', linea,
+                                "no se pueden asignar %d valores a %s. "
+                                "Sugerencia: usa una variable por cada valor, "
+                                "por ejemplo a, b := f()." % (len(tval), destino))
+            return
+        if tdest is None or tval is None:
+            return
+        if not compatible(tdest, tval):
+            self._registrar('S3', linea,
+                            "no se puede asignar %s a %s. Sugerencia: usa %s."
+                            % (tval, destino,
+                               _VALOR_SUGERIDO.get(tdest,
+                                                   'un valor de tipo %s' % tdest)))
 
     def s3_declare(self, n, nombres, exprs, vals):
-        pass
+        """Declaración corta: la cantidad de nombres debe igualar la de valores."""
+        if len(exprs) == 1 and exprs[0].tipo == 'llamada':
+            if len(vals) == 1 and vals[0] is None:       # llamada ya reportada
+                return
+            if len(vals) != len(nombres):
+                nombre_f = exprs[0].hijos[0]
+                if not vals:
+                    self._registrar('S3', n.linea,
+                                    "no se puede declarar %s con el resultado "
+                                    "de la función '%s' porque no devuelve "
+                                    "ningún valor. Sugerencia: llama a la "
+                                    "función sin guardar su resultado."
+                                    % (_plural(len(nombres), 'variable',
+                                               'variables'), nombre_f))
+                else:
+                    self._registrar('S3', n.linea,
+                                    "se declaran %s pero la función '%s' "
+                                    "devuelve %s. Sugerencia: declara una "
+                                    "variable por cada valor que devuelve."
+                                    % (_plural(len(nombres), 'variable',
+                                               'variables'), nombre_f,
+                                       _plural(len(vals), 'valor', 'valores')))
+            return
+        for e, t in zip(exprs, vals):
+            if isinstance(t, tuple):
+                quien = (("la función '%s'" % e.hijos[0]) if e.tipo == 'llamada'
+                         else 'una llamada a función')
+                cuantos = ('no devuelve ningún valor' if not t
+                           else 'devuelve %d valores' % len(t))
+                self._registrar('S3', n.linea,
+                                "no se puede usar %s como un solo valor porque "
+                                "%s. Sugerencia: guarda sus resultados en "
+                                "variables con :=." % (quien, cuantos))
+        if len(exprs) != len(nombres):
+            self._registrar('S3', n.linea,
+                            "se declaran %s pero se reciben %s. Sugerencia: la "
+                            "cantidad de nombres debe ser igual a la de valores."
+                            % (_plural(len(nombres), 'variable', 'variables'),
+                               _plural(len(exprs), 'valor', 'valores')))
 
     def s3_argumentos(self, n, simbolo, vals):
-        pass
+        """Los argumentos de una llamada se asignan a los parámetros."""
+        if simbolo is None or not simbolo.es_funcion:
+            return
+        nombre = n.hijos[0]
+        params = simbolo.params
+        if len(vals) != len(params):
+            firma = ', '.join('%s %s' % p for p in params)
+            self._registrar('S3', n.linea,
+                            "la función '%s' espera %s, pero recibe %d. "
+                            "Sugerencia: llama a %s con (%s)."
+                            % (nombre, _plural(len(params), 'argumento',
+                                               'argumentos'), len(vals),
+                               nombre, firma))
+            return
+        for (pnombre, ptipo), v in zip(params, vals):
+            if v is None or isinstance(v, tuple):
+                continue
+            if not compatible(ptipo, v):
+                self._registrar('S3', n.linea,
+                                "no se puede pasar %s como argumento '%s' de "
+                                "tipo %s a la función '%s'. Sugerencia: usa %s."
+                                % (v, pnombre, ptipo, nombre,
+                                   _VALOR_SUGERIDO.get(ptipo,
+                                                       'un valor de tipo %s'
+                                                       % ptipo)))
 
     def s3_elementos(self, n, tipo_elem, exprs, tipos):
-        pass
+        """Elementos de un literal de arreglo o slice."""
+        clase = 'arreglo' if n.tipo == 'arreglo' else 'slice'
+        for e, t in zip(exprs, tipos):
+            if t is None or isinstance(t, tuple):
+                continue
+            if not compatible(tipo_elem, t):
+                self._registrar('S3', e.linea,
+                                "no se puede usar %s como elemento de un %s de "
+                                "%s. Sugerencia: usa %s."
+                                % (t, clase, tipo_elem,
+                                   _VALOR_SUGERIDO.get(tipo_elem,
+                                                       'un valor de tipo %s'
+                                                       % tipo_elem)))
 
     def s3_pares(self, n, tclave, tvalor, pares, tipos):
-        pass
+        """Claves y valores de un literal de mapa."""
+        for par, (tk, tv) in zip(pares, tipos):
+            if tk is not None and not isinstance(tk, tuple) and not compatible(tclave, tk):
+                self._registrar('S3', par.linea,
+                                "no se puede usar %s como clave de un mapa con "
+                                "claves %s. Sugerencia: usa %s como clave."
+                                % (tk, tclave,
+                                   _VALOR_SUGERIDO.get(tclave, tclave)))
+            if tv is not None and not isinstance(tv, tuple) and not compatible(tvalor, tv):
+                self._registrar('S3', par.linea,
+                                "no se puede usar %s como valor de un mapa con "
+                                "valores %s. Sugerencia: usa %s."
+                                % (tv, tvalor,
+                                   _VALOR_SUGERIDO.get(tvalor, tvalor)))
+
+    # --- S4: retorno de funciones -----------------------------------------
+    @staticmethod
+    def _descripcion_retornos(tipos):
+        if len(tipos) == 1:
+            return tipos[0]
+        return '%d valores (%s)' % (len(tipos), _lista_tipos(tipos))
 
     def s4_return(self, n, simbolo, vals):
-        pass
+        """El return debe coincidir en cantidad y tipos con la firma."""
+        if simbolo is None:
+            return
+        esperados = simbolo.retornos
+        quien = "la función '%s'" % simbolo.nombre
+        if not esperados:
+            if vals:
+                self._registrar('S4', n.linea,
+                                "%s no devuelve ningún valor, pero retorna %d. "
+                                "Sugerencia: quita el valor del return o "
+                                "declara el tipo de retorno en la firma."
+                                % (quien, len(vals)))
+            return
+        exprs = n.hijos[0]
+        if None in vals and len(exprs) == 1 and len(esperados) != 1:
+            return                                     # llamada ya reportada
+        if len(vals) != len(esperados):
+            if not vals:
+                self._registrar('S4', n.linea,
+                                "%s debe retornar %s, pero el return no lleva "
+                                "ningún valor. Sugerencia: devuelve %s."
+                                % (quien, self._descripcion_retornos(esperados),
+                                   _lista_tipos(esperados)))
+            else:
+                self._registrar('S4', n.linea,
+                                "%s debe retornar %s, pero retorna %s. "
+                                "Sugerencia: devuelve exactamente %s."
+                                % (quien, self._descripcion_retornos(esperados),
+                                   _plural(len(vals), 'valor', 'valores'),
+                                   _lista_tipos(esperados)))
+            return
+        for i, (esperado, v) in enumerate(zip(esperados, vals)):
+            if v is None or isinstance(v, tuple):
+                continue
+            if not compatible(esperado, v):
+                posicion = ('' if len(esperados) == 1
+                            else ' en la posición %d' % (i + 1))
+                self._registrar('S4', n.linea,
+                                "%s debe retornar %s%s, pero retorna %s. "
+                                "Sugerencia: devuelve %s."
+                                % (quien, esperado, posicion, v,
+                                   _RETORNO_SUGERIDO.get(
+                                       esperado, 'un valor de tipo %s' % esperado)))
 
     def s4_fin_funcion(self, f, simbolo, sentencias):
-        pass
+        """Una función con tipo de retorno debe terminar en un return."""
+        if simbolo.retornos and not self._termina(sentencias):
+            self._registrar('S4', f.linea,
+                            "la función '%s' debe terminar con un return de %s. "
+                            "Sugerencia: agrega return al final de la función."
+                            % (simbolo.nombre, _lista_tipos(simbolo.retornos)))
+
+    def _termina(self, sentencias):
+        return bool(sentencias) and self._sentencia_termina(sentencias[-1])
+
+    def _sentencia_termina(self, s):
+        """¿La sentencia siempre termina en un return? (regla de Go simplificada)"""
+        if s.tipo == 'return':
+            return True
+        if s.tipo == 'bloque':
+            return self._termina(s.hijos[0])
+        if s.tipo == 'if':
+            _, bloque, otro = s.hijos
+            if otro is None or not self._termina(bloque.hijos[0]):
+                return False
+            return self._sentencia_termina(otro)
+        if s.tipo == 'switch':
+            casos = s.hijos[1]
+            if not any(c.tipo == 'default' for c in casos):
+                return False
+            for c in casos:
+                sents = c.hijos[1] if c.tipo == 'case' else c.hijos[0]
+                if not self._termina(sents) or self._tiene_break(sents):
+                    return False
+            return True
+        return False
+
+    def _tiene_break(self, sentencias):
+        for s in sentencias:
+            if s.tipo == 'break':
+                return True
+            if s.tipo == 'bloque' and self._tiene_break(s.hijos[0]):
+                return True
+            if s.tipo == 'if':
+                _, bloque, otro = s.hijos
+                if self._tiene_break(bloque.hijos[0]):
+                    return True
+                if otro is not None and self._tiene_break([otro]):
+                    return True
+        return False
 # FIN aporte: César Balladares
 
 
