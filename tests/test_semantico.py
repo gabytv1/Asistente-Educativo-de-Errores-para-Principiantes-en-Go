@@ -157,5 +157,154 @@ class PruebasFatima(unittest.TestCase):
 # FIN aporte: Fátima Torres
 
 
+# INICIO aporte: Elkin Salazar
+class PruebasElkin(unittest.TestCase):
+    """S5 (operaciones permitidas) y S6 (break y continue)."""
+
+    # --- S5 ---
+    def test_s5_int_mas_float_mensaje_de_la_propuesta(self):
+        cuerpo = 'var a int = 5\nvar b float64 = 2.5\nc := a + b\nfmt.Println(c)'
+        self.assertEqual(mensajes(programa(cuerpo)), [
+            "Error semántico [línea 8]: operación '+' inválida entre int y float64. "
+            "Sugerencia: usa el mismo tipo en ambos lados."])
+
+    def test_s5_literales_mezclados_se_adaptan(self):
+        self.assertEqual(codigos(programa('x := 1 + 2.0\nfmt.Println(x)')), [])
+
+    def test_s5_literal_entero_se_adapta_a_float64(self):
+        cuerpo = 'x := 2.5\ny := x * 2\nz := 2 + x\nfmt.Println(y, z, x > 1, x == 2)'
+        self.assertEqual(codigos(programa(cuerpo)), [])
+
+    def test_s5_variables_de_distinto_tipo_siguen_siendo_error(self):
+        cuerpo = 'n := 2\nx := 2.5\nfmt.Println(n * x)'
+        self.assertEqual(codigos(programa(cuerpo)), ['S5'])
+
+    def test_s5_constante_sin_tipo_se_adapta(self):
+        cuerpo = 'const N = 10\nx := 2.5\nfmt.Println(x * N)'
+        self.assertEqual(codigos(programa(cuerpo)), [])
+
+    def test_s5_division_entre_cero_literal(self):
+        self.assertEqual(mensajes(programa('a := 10\nfmt.Println(a / 0)')), [
+            "Error semántico [línea 7]: división entre cero con el operador '/'. "
+            "Sugerencia: usa un divisor distinto de 0."])
+        self.assertEqual(codigos(programa('a := 10\nfmt.Println(a % 0)')), ['S5'])
+
+    def test_s5_division_float_entre_cero_es_valida_en_go(self):
+        self.assertEqual(codigos(programa('x := 2.5\nfmt.Println(x / 0)')), [])
+
+    def test_s5_case_literal_con_switch_float64(self):
+        cuerpo = 'x := 2.5\nswitch x {\ncase 1:\n\tfmt.Println(x)\n}'
+        self.assertEqual(codigos(programa(cuerpo)), [])
+
+    def test_s5_mismo_tipo_y_concatenacion_son_validos(self):
+        cuerpo = 's := "a" + "b"\nt := 1.5 * 2.0\nu := 8 / 2\nfmt.Println(s, t, u)'
+        self.assertEqual(codigos(programa(cuerpo)), [])
+
+    def test_s5_resta_de_cadenas(self):
+        self.assertEqual(codigos(programa('s := "a" - "b"\nfmt.Println(s)')), ['S5'])
+
+    def test_s5_suma_de_bool(self):
+        self.assertEqual(codigos(programa('x := true + false\nfmt.Println(x)')), ['S5'])
+
+    def test_s5_residuo_solo_con_enteros(self):
+        self.assertEqual(codigos(programa('x := 7.5 % 2.0\nfmt.Println(x)')), ['S5'])
+        self.assertEqual(codigos(programa('x := 7 % 2\nfmt.Println(x)')), [])
+
+    def test_s5_logicos_solo_con_bool(self):
+        self.assertEqual(codigos(programa('ok := 1 && true\nfmt.Println(ok)')), ['S5'])
+        self.assertEqual(codigos(programa('ok := true && 1 > 0\nfmt.Println(ok)')), [])
+
+    def test_s5_negacion_solo_con_bool(self):
+        self.assertEqual(codigos(programa('x := !5\nfmt.Println(x)')), ['S5'])
+        self.assertEqual(codigos(programa('x := !true\nfmt.Println(x)')), [])
+
+    def test_s5_menos_unario_solo_con_numeros(self):
+        self.assertEqual(codigos(programa('x := -"a"\nfmt.Println(x)')), ['S5'])
+        self.assertEqual(codigos(programa('x := -5\ny := -2.5\nfmt.Println(x, y)')), [])
+
+    def test_s5_comparar_tipos_distintos(self):
+        self.assertEqual(codigos(programa('ok := 1 == "a"\nfmt.Println(ok)')), ['S5'])
+
+    def test_s5_comparar_mismo_tipo_es_valido_y_da_bool(self):
+        cuerpo = 'var ok bool = 1 < 2\nvar t bool = "a" != "b"\nfmt.Println(ok, t)'
+        self.assertEqual(codigos(programa(cuerpo)), [])
+
+    def test_s5_comparar_slices_no_es_valido(self):
+        cuerpo = 'a := []int{1}\nb := []int{2}\nok := a == b\nfmt.Println(ok)'
+        self.assertEqual(codigos(programa(cuerpo)), ['S5'])
+
+    def test_s5_indice_de_arreglo_debe_ser_entero(self):
+        cuerpo = 'v := [2]int{1, 2}\nx := v["a"]\nfmt.Println(x)'
+        self.assertEqual(codigos(programa(cuerpo)), ['S5'])
+
+    def test_s5_clave_de_mapa_del_tipo_correcto(self):
+        cuerpo = 'm := map[string]int{"a": 1}\nx := m[1]\ny := m["a"]\nfmt.Println(x, y)'
+        self.assertEqual(codigos(programa(cuerpo)), ['S5'])
+
+    def test_s5_indexar_un_entero(self):
+        self.assertEqual(codigos(programa('n := 5\nx := n[0]\nfmt.Println(x)')), ['S5'])
+
+    def test_s5_incremento_solo_con_numeros(self):
+        self.assertEqual(codigos(programa('s := "a"\ns++')), ['S5'])
+        self.assertEqual(codigos(programa('x := 1.5\nx++\nx--')), [])
+
+    def test_s5_operadores_compuestos(self):
+        self.assertEqual(codigos(programa('s := "a"\ns += "b"')), [])
+        self.assertEqual(codigos(programa('s := "a"\ns -= "b"')), ['S5'])
+        self.assertEqual(codigos(programa('x := 1\nx += 2.5')), ['S5'])
+
+    def test_s5_case_con_tipo_distinto_al_switch(self):
+        cuerpo = 'x := 1\nswitch x {\ncase "a":\n\tfmt.Println(1)\n}'
+        self.assertEqual(codigos(programa(cuerpo)), ['S5'])
+
+    def test_s5_llamada_que_devuelve_dos_valores_en_una_operacion(self):
+        cuerpo = 'x := dividir(4, 2) + 1\nfmt.Println(x)'
+        errs = mensajes(programa(cuerpo, F_DIVIDIR))
+        self.assertEqual(len(errs), 1)
+        self.assertIn("la función 'dividir' devuelve 2 valores", errs[0])
+
+    def test_s5_no_encadena_errores(self):
+        cuerpo = 'var a int = 1\nvar b float64 = 2.0\nc := a + b\nd := c + 1\nfmt.Println(d)'
+        self.assertEqual(codigos(programa(cuerpo)), ['S5'])
+
+    # --- S6 ---
+    def test_s6_break_fuera_de_bucle(self):
+        self.assertEqual(mensajes(programa('break')), [
+            "Error semántico [línea 6]: 'break' fuera de un bucle o switch. "
+            "Sugerencia: muévelo dentro de un for."])
+
+    def test_s6_continue_fuera_de_bucle(self):
+        self.assertEqual(mensajes(programa('continue')), [
+            "Error semántico [línea 6]: 'continue' fuera de un bucle. "
+            "Sugerencia: muévelo dentro de un for."])
+
+    def test_s6_dentro_de_for_es_valido(self):
+        cuerpo = ('for i := 0; i < 5; i++ {\n\tif i == 3 {\n\t\tbreak\n\t}\n\tcontinue\n}\n'
+                  'x := 3\nfor x > 0 {\n\tx--\n\tbreak\n}')
+        self.assertEqual(codigos(programa(cuerpo)), [])
+
+    def test_s6_break_dentro_de_switch_es_valido(self):
+        cuerpo = 'x := 1\nswitch x {\ncase 1:\n\tbreak\n}'
+        self.assertEqual(codigos(programa(cuerpo)), [])
+
+    def test_s6_continue_en_switch_sin_for(self):
+        cuerpo = 'x := 1\nswitch x {\ncase 1:\n\tcontinue\n}'
+        self.assertEqual(codigos(programa(cuerpo)), ['S6'])
+
+    def test_s6_continue_en_switch_dentro_de_for(self):
+        cuerpo = ('for i := 0; i < 3; i++ {\n\tswitch i {\n\tcase 1:\n\t\tcontinue\n\t}\n}')
+        self.assertEqual(codigos(programa(cuerpo)), [])
+
+    def test_s6_break_despues_de_cerrar_el_bucle(self):
+        cuerpo = 'for i := 0; i < 3; i++ {\n}\nbreak'
+        self.assertEqual(codigos(programa(cuerpo)), ['S6'])
+
+    def test_s6_el_contador_se_reinicia_en_cada_funcion(self):
+        extra = 'func f() {\n\tbreak\n}\n'
+        cuerpo = 'for i := 0; i < 3; i++ {\n\tf()\n}'
+        self.assertEqual(codigos(programa(cuerpo, extra)), ['S6'])
+# FIN aporte: Elkin Salazar
+
+
 if __name__ == '__main__':
     unittest.main()

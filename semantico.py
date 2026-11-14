@@ -274,49 +274,215 @@ class _ReglasFatima:
 # INICIO aporte: Elkin Salazar
 class _ReglasElkin:
     def _iniciar_elkin(self):
-        pass
+        self._bucles = 0
+        self._switches = 0
 
+    # --- S6: break y continue -------------------------------------------
     def s6_reiniciar(self):
-        pass
+        self._bucles = 0
+        self._switches = 0
 
     def s6_entrar_bucle(self):
-        pass
+        self._bucles += 1
 
     def s6_salir_bucle(self):
-        pass
+        self._bucles -= 1
 
     def s6_entrar_switch(self):
-        pass
+        self._switches += 1
 
     def s6_salir_switch(self):
-        pass
+        self._switches -= 1
 
     def s6_break(self, n):
-        pass
+        if self._bucles == 0 and self._switches == 0:
+            self._registrar('S6', n.linea,
+                            "'break' fuera de un bucle o switch. "
+                            "Sugerencia: muévelo dentro de un for.")
 
     def s6_continue(self, n):
-        pass
+        if self._bucles == 0:
+            self._registrar('S6', n.linea,
+                            "'continue' fuera de un bucle. "
+                            "Sugerencia: muévelo dentro de un for.")
+
+    # --- S5: tipos de las expresiones y operaciones permitidas -----------
+    def _s5_llamada_multiple(self, linea, texto_op, hijo, tipos):
+        """Un operando es una llamada que no devuelve exactamente un valor."""
+        if hijo is not None and hijo.tipo == 'llamada':
+            quien = "la función '%s'" % hijo.hijos[0]
+        else:
+            quien = 'una llamada a función'
+        cuantos = ('no devuelve ningún valor' if not tipos
+                   else 'devuelve %d valores' % len(tipos))
+        self._registrar('S5', linea,
+                        "operación '%s' inválida: %s %s y aquí se necesita uno. "
+                        "Sugerencia: guarda los resultados en variables con := "
+                        "antes de usarlos en una operación."
+                        % (texto_op, quien, cuantos))
+
+    def _s5_aritmetica(self, linea, texto_op, op, tl, tr):
+        """Valida + - * / % entre dos tipos conocidos; devuelve el tipo o None."""
+        if op == '%':
+            if tl == 'int' and tr == 'int':
+                return 'int'
+            self._registrar('S5', linea,
+                            "el operador '%%' solo se aplica a enteros, pero "
+                            "recibió %s y %s. Sugerencia: usa operandos de "
+                            "tipo int." % (tl, tr))
+            return None
+        if tl != tr:
+            self._registrar('S5', linea,
+                            "operación '%s' inválida entre %s y %s. "
+                            "Sugerencia: usa el mismo tipo en ambos lados."
+                            % (texto_op, tl, tr))
+            return None
+        if tl in TIPOS_NUMERICOS:
+            return tl
+        if tl == 'string':
+            if op == '+':
+                return 'string'
+            self._registrar('S5', linea,
+                            "el operador '%s' no se puede aplicar a valores "
+                            "string. Sugerencia: con cadenas solo se puede "
+                            "usar + para concatenar." % texto_op)
+            return None
+        self._registrar('S5', linea,
+                        "el operador '%s' solo se aplica a números (y + a "
+                        "cadenas), pero recibió %s y %s. Sugerencia: usa "
+                        "operandos int o float64." % (texto_op, tl, tr))
+        return None
+
+    def _s5_division_cero(self, n, op, tl, tr):
+        """/ o % entre enteros con divisor 0 escrito directamente."""
+        der = n.hijos[2]
+        if (op in ('/', '%') and tl == 'int' and tr == 'int'
+                and der.tipo == 'literal' and der.hijos[0] == 'INTEGER_VALUE'
+                and int(der.hijos[1]) == 0):
+            self._registrar('S5', n.linea,
+                            "división entre cero con el operador '%s'. "
+                            "Sugerencia: usa un divisor distinto de 0." % op)
+            return True
+        return False
 
     def s5_binaria(self, n, op, tl, tr):
-        return None
+        """Operadores aritméticos, lógicos y de comparación; devuelve el tipo."""
+        es_bool = n.tipo in ('comparacion', 'logica')
+        for hijo, t in ((n.hijos[1], tl), (n.hijos[2], tr)):
+            if isinstance(t, tuple):
+                self._s5_llamada_multiple(n.linea, op, hijo, t)
+                return 'bool' if es_bool else None
+        if tl is None or tr is None:
+            return 'bool' if es_bool else None
+        tl, tr = unificar(tl, tr)
+        if n.tipo == 'aritmetica':
+            if self._s5_division_cero(n, op, tl, tr):
+                return None
+            return self._s5_aritmetica(n.linea, op, op, tl, tr)
+        if n.tipo == 'logica':
+            if tl != 'bool' or tr != 'bool':
+                self._registrar('S5', n.linea,
+                                "el operador '%s' solo se aplica a valores "
+                                "bool, pero recibió %s y %s. Sugerencia: usa "
+                                "condiciones que den true o false, por "
+                                "ejemplo x > 0." % (op, tl, tr))
+            return 'bool'
+        # comparación
+        if tl != tr:
+            self._registrar('S5', n.linea,
+                            "operación '%s' inválida entre %s y %s. "
+                            "Sugerencia: compara valores del mismo tipo."
+                            % (op, tl, tr))
+        elif tl not in TIPOS_SIMPLES:
+            self._registrar('S5', n.linea,
+                            "operación '%s' inválida entre valores de tipo %s. "
+                            "Sugerencia: compara los elementos uno por uno, "
+                            "por ejemplo a[0] == b[0]." % (op, tl))
+        return 'bool'
 
     def s5_not(self, n, t):
-        return None
+        if isinstance(t, tuple):
+            self._s5_llamada_multiple(n.linea, '!', n.hijos[0], t)
+        elif t is not None and t != 'bool':
+            self._registrar('S5', n.linea,
+                            "el operador '!' solo se aplica a valores bool, "
+                            "pero recibió %s. Sugerencia: usa una condición "
+                            "que dé true o false, por ejemplo !(x > 0)." % t)
+        return 'bool'
 
     def s5_menos(self, n, t):
-        return None
+        if isinstance(t, tuple):
+            self._s5_llamada_multiple(n.linea, '-', n.hijos[0], t)
+            return None
+        if t is None:
+            return None
+        if t not in TIPOS_NUMERICOS:
+            self._registrar('S5', n.linea,
+                            "el signo '-' solo se aplica a números, pero "
+                            "recibió %s. Sugerencia: usa un valor int o "
+                            "float64." % t)
+            return None
+        return t
 
     def s5_incdec(self, n, t):
-        pass
+        """x++ y x-- solo con int o float64."""
+        if t is None or isinstance(t, tuple):
+            return
+        if t not in TIPOS_NUMERICOS:
+            self._registrar('S5', n.linea,
+                            "el operador '%s' solo se aplica a números (int o "
+                            "float64), pero la variable es %s. Sugerencia: usa "
+                            "una variable numérica." % (n.hijos[0], t))
 
     def s5_compuesta(self, n, tl, tr):
-        pass
+        """x += y y x -= y: equivalen a x = x + y y x = x - y."""
+        op = n.hijos[0]
+        if isinstance(tr, tuple):
+            self._s5_llamada_multiple(n.linea, op, n.hijos[2], tr)
+            return
+        if tl is None or tr is None:
+            return
+        tl, tr = unificar(tl, tr)
+        self._s5_aritmetica(n.linea, op, op[0], tl, tr)
 
     def s5_indice(self, n, tbase, tindice):
+        """Acceso nombre[expr]; devuelve el tipo del elemento."""
+        nombre = n.hijos[0]
+        if tbase is None:
+            return None
+        elemento = elemento_de(tbase)
+        if elemento is not None:
+            if tindice is not None and tindice != 'int':
+                self._registrar('S5', n.linea,
+                                "el índice de '%s' debe ser int, pero es %s. "
+                                "Sugerencia: usa un entero como índice, por "
+                                "ejemplo %s[0]." % (nombre, tindice, nombre))
+            return elemento
+        mapa = partes_mapa(tbase)
+        if mapa is not None:
+            clave, valor = mapa
+            if tindice is not None and not compatible(clave, tindice):
+                self._registrar('S5', n.linea,
+                                "la clave de '%s' debe ser %s, pero es %s. "
+                                "Sugerencia: usa una clave de tipo %s."
+                                % (nombre, clave, tindice, clave))
+            return valor
+        self._registrar('S5', n.linea,
+                        "no se puede indexar '%s' de tipo %s con []. "
+                        "Sugerencia: solo los arreglos, slices y mapas se "
+                        "indexan." % (nombre, tbase))
         return None
 
     def s5_case(self, caso, tswitch, tcase):
-        pass
+        """Cada case se compara con la expresión del switch (mismo tipo)."""
+        if tswitch is None or tcase is None or isinstance(tcase, tuple):
+            return
+        tswitch, tcase = unificar(tswitch, tcase)
+        if tswitch != tcase:
+            self._registrar('S5', caso.linea,
+                            "el case compara un valor %s con un switch de tipo "
+                            "%s. Sugerencia: usa valores de tipo %s en los "
+                            "case." % (tcase, tswitch, tswitch))
 # FIN aporte: Elkin Salazar
 
 
@@ -329,6 +495,9 @@ class _ReglasElkin:
 # ===========================================================================
 # INICIO aporte: César Balladares
 class _ReglasCesar:
+    """Interfaz acordada. Pendiente de César Balladares: S3 (tipo del valor
+    asignado) y S4 (retorno de funciones). Su commit reemplaza esta clase."""
+
     def _iniciar_cesar(self):
         pass
 
