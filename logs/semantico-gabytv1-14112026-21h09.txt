@@ -1,0 +1,33 @@
+==============================================================================
+ANÁLISIS SEMÁNTICO - Asistente Educativo de Errores para Go
+==============================================================================
+Usuario Git   : gabytv1
+Archivo       : errores/semantico_fatima.go
+Fecha y hora  : 14-11-2026 21:09
+==============================================================================
+
+ESTADO DE LOS ANÁLISIS PREVIOS
+------------------------------------------------------------------------------
+Análisis léxico     : sin errores
+Análisis sintáctico : sin errores
+
+ERRORES SEMÁNTICOS
+------------------------------------------------------------------------------
+[S2] Error semántico [línea 9]: no se puede modificar la constante 'LIMITE'. Sugerencia: usa una variable si el valor debe cambiar.
+[S1] Error semántico [línea 10]: la variable 'conteo' no ha sido declarada. Sugerencia: declárala con var o :=.
+
+TABLA DE SÍMBOLOS (nombre, tipo, constante, ámbito, línea)
+------------------------------------------------------------------------------
+  main           func()                               no         global                   7
+  LIMITE         int                                  sí         global                   5
+  total          int                                  no         función main             8
+  resultado      (desconocido)                        no         función main             10
+
+RESUMEN
+------------------------------------------------------------------------------
+Errores léxicos     : 0
+Errores sintácticos : 0
+Errores semánticos  : 2
+  S1 Identificadores            1
+  S2 Constantes                 1
+Resultado           : CON ERRORES SEMÁNTICOS

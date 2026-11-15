@@ -1,0 +1,46 @@
+==============================================================================
+ANÁLISIS SEMÁNTICO - Asistente Educativo de Errores para Go
+==============================================================================
+Usuario Git   : gabytv1
+Archivo       : algoritmos/algoritmo1.go
+Fecha y hora  : 14-11-2026 21:07
+==============================================================================
+
+ESTADO DE LOS ANÁLISIS PREVIOS
+------------------------------------------------------------------------------
+Análisis léxico     : sin errores
+Análisis sintáctico : sin errores
+
+ERRORES SEMÁNTICOS
+------------------------------------------------------------------------------
+(ninguno)
+
+TABLA DE SÍMBOLOS (nombre, tipo, constante, ámbito, línea)
+------------------------------------------------------------------------------
+  clasificar     func(promedio float64) string        no         global                   18
+  main           func()                               no         global                   29
+  MINIMO         float64                              sí         global                   11
+  MATERIA        string                               sí         global                   12
+  aprobadas      int                                  no         global                   14
+  activo         bool                                 no         global                   15
+  ajuste         float64                              no         global                   16
+  promedio       float64                              no         función clasificar       18
+  notas          [5]float64                           no         función main             30
+  suma           float64                              no         función main             31
+  contador       int                                  no         función main             32
+  intentos       int                                  no         función main             33
+  mensaje        string                               no         función main             33
+  i              int                                  no         for (línea 35)           35
+  promedio       float64                              no         función main             44
+  estado         string                               no         función main             45
+  nivel          int                                  no         función main             48
+  pesos          map[string]int                       no         función main             58
+  resto          int                                  no         función main             75
+  libre          int                                  no         función main             79
+
+RESUMEN
+------------------------------------------------------------------------------
+Errores léxicos     : 0
+Errores sintácticos : 0
+Errores semánticos  : 0
+Resultado           : SEMÁNTICA CORRECTA
