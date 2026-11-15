@@ -1,0 +1,56 @@
+==============================================================================
+ANÁLISIS SEMÁNTICO - Asistente Educativo de Errores para Go
+==============================================================================
+Usuario Git   : CBalla-05
+Archivo       : algoritmos/algoritmo2.go
+Fecha y hora  : 15-11-2026 10:23
+==============================================================================
+
+ESTADO DE LOS ANÁLISIS PREVIOS
+------------------------------------------------------------------------------
+Análisis léxico     : sin errores
+Análisis sintáctico : sin errores
+
+ERRORES SEMÁNTICOS
+------------------------------------------------------------------------------
+(ninguno)
+
+TABLA DE SÍMBOLOS (nombre, tipo, constante, ámbito, línea)
+------------------------------------------------------------------------------
+  factorial      func(n int) int                      no         global                   19
+  dividir        func(a int, b int) (int, int)        no         global                   26
+  promedio       func(valores []float64) float64      no         global                   30
+  mostrar        func(texto string)                   no         global                   38
+  main           func()                               no         global                   43
+  PI             float64                              sí         global                   11
+  SALUDO         string                               sí         global                   12
+  llamadas       int                                  no         global                   14
+  precision      float64                              no         global                   15
+  modo           string                               no         global                   16
+  verbose        bool                                 no         global                   17
+  n              int                                  no         función factorial        19
+  a              int                                  no         función dividir          26
+  b              int                                  no         función dividir          26
+  valores        []float64                            no         función promedio         30
+  suma           float64                              no         función promedio         31
+  i              int                                  no         for (línea 32)           32
+  texto          string                               no         función mostrar          38
+  f              int                                  no         función main             45
+  c              int                                  no         función main             0
+  m              int                                  no         función main             0
+  edades         []float64                            no         función main             49
+  prom           float64                              no         función main             50
+  area           float64                              no         función main             51
+  nombres        []string                             no         función main             54
+  etiqueta       string                               no         función main             55
+  contador       int                                  no         función main             59
+  pares          map[string]int                       no         función main             68
+  i              int                                  no         for (línea 69)           69
+  leido          int                                  no         función main             90
+
+RESUMEN
+------------------------------------------------------------------------------
+Errores léxicos     : 0
+Errores sintácticos : 0
+Errores semánticos  : 0
+Resultado           : SEMÁNTICA CORRECTA

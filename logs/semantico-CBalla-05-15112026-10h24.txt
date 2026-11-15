@@ -1,0 +1,34 @@
+==============================================================================
+ANÁLISIS SEMÁNTICO - Asistente Educativo de Errores para Go
+==============================================================================
+Usuario Git   : CBalla-05
+Archivo       : errores/semantico_cesar.go
+Fecha y hora  : 15-11-2026 10:24
+==============================================================================
+
+ESTADO DE LOS ANÁLISIS PREVIOS
+------------------------------------------------------------------------------
+Análisis léxico     : sin errores
+Análisis sintáctico : sin errores
+
+ERRORES SEMÁNTICOS
+------------------------------------------------------------------------------
+[S4] Error semántico [línea 6]: la función 'suma' debe retornar int, pero retorna string. Sugerencia: devuelve un entero.
+[S3] Error semántico [línea 10]: no se puede asignar string a 'edad' de tipo int. Sugerencia: usa un valor entero.
+
+TABLA DE SÍMBOLOS (nombre, tipo, constante, ámbito, línea)
+------------------------------------------------------------------------------
+  suma           func(a int, b int) int               no         global                   5
+  main           func()                               no         global                   9
+  a              int                                  no         función suma             5
+  b              int                                  no         función suma             5
+  edad           int                                  no         función main             10
+
+RESUMEN
+------------------------------------------------------------------------------
+Errores léxicos     : 0
+Errores sintácticos : 0
+Errores semánticos  : 2
+  S3 Asignación de tipo         1
+  S4 Retorno de funciones       1
+Resultado           : CON ERRORES SEMÁNTICOS
