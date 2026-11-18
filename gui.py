@@ -52,6 +52,39 @@ def _fuente_mono():
     return 'TkFixedFont'
 
 
+class BarraAuto(ctk.CTkScrollbar):
+    """Barra de desplazamiento que solo se ve cuando el contenido no cabe.
+
+    No se quita del layout (eso hacía que la interfaz se reacomodara y
+    parpadeara): sigue ocupando su espacio, pero cuando todo el contenido es
+    visible su "pulgar" se pinta del color del fondo, de modo que no se ve y
+    no da la falsa impresión de que se puede desplazar.
+    """
+
+    def __init__(self, master, fondo=PANEL, **kwargs):
+        super().__init__(master, **kwargs)
+        self._fondo = fondo
+        self._color_boton = self.cget('button_color')
+        self._color_hover = self.cget('button_hover_color')
+        self._visible = None
+        self._pintar(False)
+
+    def _pintar(self, visible):
+        if visible == self._visible:
+            return
+        self._visible = visible
+        if visible:
+            self.configure(button_color=self._color_boton,
+                           button_hover_color=self._color_hover)
+        else:
+            self.configure(button_color=self._fondo,
+                           button_hover_color=self._fondo)
+
+    def set(self, inicio, fin):
+        super().set(inicio, fin)
+        self._pintar(float(inicio) > 0.000001 or float(fin) < 0.999999)
+
+
 class App(ctk.CTk):
     def __init__(self, carpeta_logs=lg.CARPETA_LOGS):
         super().__init__()
@@ -159,26 +192,29 @@ class App(ctk.CTk):
         izq.grid(row=0, column=0, sticky='nsew', padx=(0, 8))
         zona = tk.Frame(izq, bg=PANEL)
         zona.pack(fill='both', expand=True, padx=2, pady=(0, 2))
+        zona.grid_columnconfigure(1, weight=1)
+        zona.grid_rowconfigure(0, weight=1)
         comunes = dict(font=self.fuente_mono, bd=0, highlightthickness=0,
                        wrap='none', padx=6, pady=8, spacing1=0, spacing3=0)
         self.numeros = tk.Text(zona, width=4, bg=PANEL, fg=TENUE, cursor='arrow',
                                takefocus=0, state='disabled', **comunes)
-        self.numeros.pack(side='left', fill='y')
+        self.numeros.grid(row=0, column=0, sticky='ns')
         self.numeros.tag_configure('der', justify='right')
         self.numeros.tag_configure('err', background=ROJO_FONDO, foreground=ROJO)
         for ev in ('<MouseWheel>', '<Button-4>', '<Button-5>', '<Button-1>',
                    '<B1-Motion>', '<Double-Button-1>'):
             self.numeros.bind(ev, lambda e: 'break')
-        self.sb_y = ctk.CTkScrollbar(zona, command=self._scroll_y)
-        self.sb_y.pack(side='right', fill='y')
-        self.sb_x = ctk.CTkScrollbar(izq, orientation='horizontal')
-        self.sb_x.pack(side='bottom', fill='x', padx=2)
+        # Las barras solo aparecen si el código no cabe en el editor
+        self.sb_y = BarraAuto(zona, command=self._scroll_y)
+        self.sb_y.grid(row=0, column=2, sticky='ns')
+        self.sb_x = BarraAuto(zona, orientation='horizontal')
+        self.sb_x.grid(row=1, column=0, columnspan=3, sticky='ew')
         self.editor = tk.Text(zona, bg=PANEL, fg=TEXTO, insertbackground=TEXTO,
                               undo=True, tabs=self.fuente_mono[1] * 3,
                               selectbackground='#C7D0EE', selectforeground=TEXTO,
                               yscrollcommand=self._al_scroll,
                               xscrollcommand=self.sb_x.set, **comunes)
-        self.editor.pack(side='left', fill='both', expand=True)
+        self.editor.grid(row=0, column=1, sticky='nsew')
         self.sb_x.configure(command=self.editor.xview)
         self.editor.tag_configure('linea_error', background=ROJO_FONDO)
         self.editor.tag_configure('foco', background=FOCO)
@@ -212,13 +248,15 @@ class App(ctk.CTk):
     def _crear_tabla(self, padre):
         marco = tk.Frame(padre, bg=PANEL)
         marco.pack(fill='both', expand=True)
+        marco.grid_columnconfigure(0, weight=1)
+        marco.grid_rowconfigure(0, weight=1)
         tabla = ttk.Treeview(marco, show='headings', selectmode='browse')
-        sy = ctk.CTkScrollbar(marco, command=tabla.yview)
-        sx = ctk.CTkScrollbar(marco, orientation='horizontal', command=tabla.xview)
+        sy = BarraAuto(marco, command=tabla.yview)
+        sx = BarraAuto(marco, orientation='horizontal', command=tabla.xview)
         tabla.configure(yscrollcommand=sy.set, xscrollcommand=sx.set)
-        sy.pack(side='right', fill='y')
-        sx.pack(side='bottom', fill='x')
-        tabla.pack(side='left', fill='both', expand=True)
+        tabla.grid(row=0, column=0, sticky='nsew')
+        sy.grid(row=0, column=1, sticky='ns')
+        sx.grid(row=1, column=0, sticky='ew')
         tabla.tag_configure('error', background=ROJO_FONDO, foreground=ROJO)
         return tabla
 
@@ -235,13 +273,15 @@ class App(ctk.CTk):
         marco.pack(side='bottom', fill='x', padx=24, pady=(10, 4))
         zona = tk.Frame(marco, bg=PANEL)
         zona.pack(fill='both', expand=True, padx=2, pady=(0, 2))
-        sb = ctk.CTkScrollbar(zona)
-        sb.pack(side='right', fill='y')
+        zona.grid_columnconfigure(0, weight=1)
+        zona.grid_rowconfigure(0, weight=1)
+        sb = BarraAuto(zona)
+        sb.grid(row=0, column=1, sticky='ns')
         self.consola = tk.Text(zona, height=7, bg=PANEL, fg=TEXTO, bd=0,
                                highlightthickness=0, wrap='word', padx=12, pady=8,
                                font=('Segoe UI', 11), state='disabled',
                                yscrollcommand=sb.set)
-        self.consola.pack(side='left', fill='both', expand=True)
+        self.consola.grid(row=0, column=0, sticky='nsew')
         sb.configure(command=self.consola.yview)
         t = self.consola
         t.tag_configure('insignia_ok', background=VERDE_FONDO, foreground=VERDE,
@@ -545,3 +585,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+    
