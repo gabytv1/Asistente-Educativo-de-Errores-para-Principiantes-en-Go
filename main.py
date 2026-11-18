@@ -66,9 +66,10 @@ def construir_log(desarrollador, ruta_archivo, ahora, tokens, errores):
     return '\n'.join(lineas) + '\n'
 
 
-def ejecutar(ruta_archivo, desarrollador, carpeta_logs=CARPETA_LOGS):
-    with open(ruta_archivo, encoding='utf-8') as f:
-        codigo = f.read()
+def ejecutar(ruta_archivo, desarrollador, carpeta_logs=CARPETA_LOGS, codigo=None):
+    if codigo is None:      # la interfaz gráfica pasa el texto del editor
+        with open(ruta_archivo, encoding='utf-8') as f:
+            codigo = f.read()
     analizador = AnalizadorLexico()
     tokens, errores = analizador.analizar(codigo)
     ahora = datetime.now()

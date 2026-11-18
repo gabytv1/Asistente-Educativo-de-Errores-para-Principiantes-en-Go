@@ -355,3 +355,63 @@ class PruebasIntegral(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+class PruebasRevisionFinal(unittest.TestCase):
+    """Casos encontrados al revisar la interfaz: cascadas, for con paréntesis, if."""
+
+    def mensajes(self, cuerpo):
+        return [e['mensaje'] for e in analizar(programa(cuerpo))[1]]
+
+    def test_for_con_parentesis_sin_cerrar_es_Y2(self):
+        errs = analizar(programa('for (i := 0; i < 5; i++ {\n\tx := i\n}'))[1]
+        self.assertEqual([e['codigo'] for e in errs], ['Y2'])
+
+    def test_for_con_parentesis_sobrantes_explica_los_parentesis(self):
+        errs = analizar(programa('for (i := 0; i < 5; i++) {\n\tx := i\n}'))[1]
+        self.assertEqual([e['codigo'] for e in errs], ['Y6'])
+        self.assertIn('paréntesis', errs[0]['mensaje'])
+        self.assertNotIn("':='", errs[0]['mensaje'])
+
+    def test_for_con_condicion_entre_parentesis_es_valido_en_go(self):
+        sin_errores(self, programa('x := 3\nfor (x > 0) {\n\tx--\n}'))
+
+    def test_parentesis_de_cierre_sobrante_no_genera_cascada(self):
+        for cuerpo in ('x := 1\nif x > 0) {\n\tx++\n}',
+                       'for i := 0; i < 5; i++) {\n\tx := i\n}'):
+            self.assertEqual(errores(programa(cuerpo)), ['Y6'], cuerpo)
+
+    def test_llave_sobrante_da_un_solo_error(self):
+        cuerpo = 'if true {\n\tx := 1\n}\n}\nif true {\n\ty := 2\n}\nz := 3'
+        errs = analizar(programa(cuerpo))[1]
+        self.assertEqual(len(errs), 1)
+        self.assertIn('fuera de una función', errs[0]['mensaje'])
+
+    def test_if_sin_condicion_y_con_operando_faltante(self):
+        self.assertIn('falta la condición', self.mensajes('if {\n\tx := 1\n}')[0])
+        self.assertIn('falta un valor', self.mensajes('x := 1\nif x > {\n\tx++\n}')[0])
+
+    def test_if_con_asignacion_sugiere_doble_igual(self):
+        self.assertIn("'=='", self.mensajes('x := 1\nif x = 3 {\n\tx++\n}')[0])
+
+    def test_if_sin_llave_en_la_misma_linea_es_Y1(self):
+        self.assertEqual(errores(programa('x := 1\nif x > 0 fmt.Println(x)')), ['Y1'])
+
+    def test_else_sin_if_tiene_mensaje_propio(self):
+        errs = analizar(programa('x := 1\nelse {\n\tx++\n}'))[1]
+        self.assertEqual([e['codigo'] for e in errs], ['Y5'])
+        self.assertIn('sin un if', errs[0]['mensaje'])
+
+    def test_case_sin_dos_puntos_no_genera_cascada(self):
+        cuerpo = 'x := 1\nswitch x {\ncase 1\n\tfmt.Println(1)\n}'
+        errs = analizar(programa(cuerpo))[1]
+        self.assertEqual(len(errs), 1)
+        self.assertIn("':'", errs[0]['mensaje'])
+
+    def test_scanln_sin_ampersand(self):
+        self.assertIn('&x', self.mensajes('var x int\nfmt.Scanln(x)')[0])
+
+    def test_varios_errores_independientes_se_siguen_informando(self):
+        cuerpo = ('for (i := 0; i < 3; i++) {\n\tx := i\n}\n'
+                  'fmt.Println("a"\nvar total')
+        self.assertEqual(errores(programa(cuerpo)), ['Y6', 'Y2', 'Y4'])

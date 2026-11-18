@@ -1,0 +1,32 @@
+==============================================================================
+ANÁLISIS SINTÁCTICO - Asistente Educativo de Errores para Go
+==============================================================================
+Usuario Git   : gabytv1
+Archivo       : algoritmos/algoritmo3.go
+Fecha y hora  : 17-11-2026 23:04
+==============================================================================
+
+ERRORES SINTÁCTICOS
+------------------------------------------------------------------------------
+(ninguno)
+
+CONSTRUCCIONES RECONOCIDAS
+------------------------------------------------------------------------------
+  Expresiones aritméticas (operadores + - * / %)       5
+  Comparaciones (== != < <= > >=)                      1
+  Declaración con var                                  4
+  Declaración corta (:=)                               5
+  Constantes (const)                                   2
+  Asignaciones (=, +=, -=)                             2
+  Literales de slice                                   1
+  Accesos por índice o clave                           1
+  Estructuras if / if-else                             1
+  Definiciones de función                              3
+  Llamadas a función                                   1
+  return                                               3
+
+RESUMEN
+------------------------------------------------------------------------------
+Errores sintácticos : 0
+Errores léxicos     : 0
+Resultado           : SINTAXIS CORRECTA

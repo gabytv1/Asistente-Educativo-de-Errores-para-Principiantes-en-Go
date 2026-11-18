@@ -255,7 +255,7 @@ def error_y1(c):
         if c.pila[i] in _ENCABEZADOS:
             kw = c.pila[i]
             _registrar('Y1', c.linea,
-                       "token inesperado NEWLINE al final de %s. "
+                       "falta '{' al final de %s. "
                        "Sugerencia: abre el bloque con '{' en la misma "
                        "línea %s." % (_ENCABEZADOS[kw], _MISMA_LINEA[kw]))
             sig = c.fuente.token()                     # '{' en la línea siguiente
@@ -268,9 +268,15 @@ def error_y1(c):
 def error_y5(c):
     """Y5: 'else' al comienzo de una línea (debe ir después de la llave '}')."""
     if c.tok.type == 'ELSE' and c.fuente.previo == 'NEWLINE':
-        _registrar('Y5', c.linea,
-                   "'else' debe ir en la misma línea que la llave de cierre "
-                   "del if. Sugerencia: escribe } else {.")
+        h = c.hist
+        if len(h) >= 3 and h[-3].type == 'RBRACE':
+            _registrar('Y5', c.linea,
+                       "'else' debe ir en la misma línea que la llave de cierre "
+                       "del if. Sugerencia: escribe } else {.")
+        else:
+            _registrar('Y5', c.linea,
+                       "'else' sin un if antes. Sugerencia: un else solo puede "
+                       "ir después del bloque de un if, en la forma } else {.")
         c.parser.errok()
         return c.fuente.token()                        # se descarta el 'else'
     return NO_APLICA
@@ -290,7 +296,7 @@ def p_sent_declare(p):
     '''sent_simple : ID DECLARE expr
                    | lista_id DECLARE lista_expr'''
     if isinstance(p[1], list):
-        p[0] = Nodo('declare', _linea(p), p[1], p[3])
+        p[0] = Nodo('declare', p.lineno(2), p[1], p[3])   # línea del ':='
     else:
         p[0] = Nodo('declare', p.lineno(1), [p[1]], [p[3]])
 
@@ -432,6 +438,38 @@ def error_y4(c):
                    "Sugerencia: escribe const %s = <valor>." % (valores[-1], valores[-1]))
         return None
     return NO_APLICA
+
+
+def error_for_parentesis(c):
+    """for ( ... := ... ): el '(' abierto tras 'for' no admite una declaración.
+
+    Si el paréntesis nunca se cierra en el encabezado -> Y2; si sí se cierra,
+    los paréntesis sobran (en Go el for clásico no los lleva) -> Y6.
+    """
+    pila = c.pila
+    if c.tok.type not in ('DECLARE', 'ASSIGN', 'PLUS_ASSIGN', 'MINUS_ASSIGN',
+                          'INC', 'DEC', 'SEMICOLON') or 'FOR' not in pila:
+        return NO_APLICA
+    i = len(pila) - 1 - pila[::-1].index('FOR')
+    if 'LBRACE' in pila[i:] or pila[i + 1:i + 2] != ['LPAREN']:
+        return NO_APLICA
+    balance, ultimo, tok = c.parens, c.tok, c.tok
+    while tok is not None and tok.type not in ('LBRACE', 'NEWLINE'):
+        if tok.type == 'LPAREN':
+            balance += 1
+        elif tok.type == 'RPAREN':
+            balance -= 1
+        tok = c.fuente.token()
+    if balance > 0:
+        _registrar('Y2', c.linea,
+                   "se esperaba ')' antes de '{' en el encabezado del for. "
+                   "Sugerencia: cierra el paréntesis o, mejor, quita los "
+                   "paréntesis: en Go se escribe for i := 0; i < 5; i++ { sin ellos.")
+    else:
+        _registrar('Y6', c.linea,
+                   "el for no lleva paréntesis alrededor de sus tres partes. "
+                   "Sugerencia: escribe for i := 0; i < 5; i++ { sin paréntesis.")
+    return _saltar_sentencia(c, desde=tok, profundidad=1 if tok is not None and tok.type == 'LBRACE' else 0)
 
 
 def error_incompleto_oculto(c):
@@ -641,6 +679,69 @@ def error_incompleto(c):
     return NO_APLICA
 
 
+def _encabezado_abierto(c):
+    """Palabra (IF, FOR, SWITCH...) del encabezado en curso, o None."""
+    for i in range(len(c.pila) - 1, -1, -1):
+        if c.pila[i] == 'LBRACE':
+            return None
+        if c.pila[i] in _ENCABEZADOS:
+            return c.pila[i]
+    return None
+
+
+_OPERADORES = {'PLUS', 'MINUS', 'TIMES', 'DIVIDE', 'MOD', 'EQ', 'NE', 'LT', 'LE',
+               'GT', 'GE', 'AND', 'OR', 'NOT'}
+_INICIAN_SENTENCIA = {'FMT', 'ID', 'RETURN', 'BREAK', 'CONTINUE', 'IF', 'FOR', 'SWITCH'}
+_FIN_DECLARACION = {'NEWLINE', 'declaraciones', 'importacion', 'cabecera',
+                    'decl_func', 'decl_var', 'decl_const', 'fin'}
+_OPERANDO = {'expr', 'ID', 'INTEGER_VALUE', 'FLOAT_VALUE', 'STRING_VALUE', 'TRUE',
+             'FALSE', 'RPAREN', 'RBRACKET', 'literal', 'acceso', 'llamada'}
+
+
+def _mensaje_y6(c):
+    """Texto del Y6 según el contexto; Y1 si lo que falta es la '{'."""
+    tok, pila = c.tok, c.pila
+    kw = _encabezado_abierto(c)
+    # fuera de una función (p. ej. sobra una '}' antes)
+    if (c.llaves <= 0 and tok.type in _INICIAN_SENTENCIA
+            and (not pila or pila[-1] in _FIN_DECLARACION)):
+        return ('Y6', "token inesperado '%s': esta sentencia quedó fuera de una "
+                "función. Sugerencia: probablemente sobra una '}' antes de esta "
+                "línea y cerró la función antes de tiempo." % _texto_token(tok))
+    if tok.type == 'LBRACE' and kw in ('IF', 'FOR', 'SWITCH') and pila[-1] == kw:
+        return ('Y6', "falta %s antes de '{'. Sugerencia: escribe la condición "
+                "entre %s y '{'." % (_ENCABEZADOS[kw], kw.lower()))
+    if tok.type == 'LBRACE' and pila and pila[-1] in _OPERADORES and kw:
+        return ('Y6', "la condición está incompleta: falta un valor después de "
+                "'%s'. Sugerencia: escribe el segundo operando." % c.valores[-1])
+    if tok.type == 'ASSIGN' and kw == 'IF':
+        return ('Y6', "token inesperado '=' en la condición del if. Sugerencia: "
+                "para comparar usa '==' ('=' es para asignar).")
+    if tok.type == 'DECLARE' and kw == 'IF':
+        return ('Y6', "token inesperado ':=' en la condición del if. Sugerencia: "
+                "declara la variable antes del if y compárala dentro de la condición.")
+    if tok.type == 'NEWLINE' and pila[-2:] == ['CASE', 'lista_expr']:
+        return ('Y6', "falta ':' después del case. Sugerencia: escribe case 1:.")
+    if tok.type == 'NEWLINE' and pila[-1:] == ['DEFAULT']:
+        return ('Y6', "falta ':' después de default. Sugerencia: escribe default:.")
+    if pila[-2:] == ['FMT', 'DOT']:
+        return ('Y6', "token inesperado '%s' después de 'fmt.'. Sugerencia: "
+                "solo se admiten fmt.Println y fmt.Scanln." % _texto_token(tok))
+    if pila[-2:] == ['SCANLN', 'LPAREN'] and tok.type == 'ID':
+        return ('Y6', "fmt.Scanln necesita la dirección de la variable. "
+                "Sugerencia: escribe fmt.Scanln(&%s)." % tok.value)
+    if (kw in ('IF', 'SWITCH') and pila[-1:] and pila[-1] in _OPERANDO
+            and tok.type in _INICIAN_SENTENCIA):
+        return ('Y1', "falta '{' después de %s. Sugerencia: abre el bloque con "
+                "'{' en la misma línea %s." % (_ENCABEZADOS[kw], _MISMA_LINEA[kw]))
+    if tok.type == 'NEWLINE':
+        return ('Y6', "la línea terminó antes de completar la sentencia. "
+                "Sugerencia: revisa que no falte un cierre ')', ']' o '}' "
+                "o un valor.")
+    return ('Y6', "token inesperado '%s'. Sugerencia: revisa la sentencia y "
+            "la ubicación de ese símbolo." % _texto_token(tok))
+
+
 def error_y6(c):
     """Y6: token inesperado (caso general)."""
     tok = c.tok
@@ -648,14 +749,51 @@ def error_y6(c):
         _registrar('Y6', c.linea,
                    "token inesperado '}'. Sugerencia: sobra una llave de "
                    "cierre o falta la que abre el bloque.")
-    elif tok.type == 'RPAREN' and c.parens <= 0:
+        return None
+    if tok.type == 'RPAREN' and c.parens <= 0:
         _registrar('Y6', c.linea,
                    "token inesperado ')'. Sugerencia: sobra un paréntesis de "
                    "cierre o falta el que abre.")
-    else:
-        _registrar('Y6', c.linea,
-                   "token inesperado '%s'. Sugerencia: revisa la sentencia y "
-                   "la ubicación de ese símbolo." % _texto_token(tok))
+        return _saltar_sentencia(c)
+    codigo, texto = _mensaje_y6(c)
+    _registrar(codigo, c.linea, texto)
+    if texto.startswith("falta ':'"):                 # case / default sin ':'
+        return c.seguir_con(_sintetico('COLON', ':', tok))
+    if 'fuera de una función' in texto:
+        return _saltar_hasta_funcion(c)
+    return _saltar_sentencia(c)
+
+
+def _saltar_hasta_funcion(c):
+    """Sentencia fuera de una función: se descarta hasta el próximo 'func'
+    que empiece una línea, para no informar cada línea suelta."""
+    tok, previo = c.tok, 'NEWLINE'
+    while tok is not None and not (tok.type == 'FUNC' and previo == 'NEWLINE'):
+        previo = tok.type
+        tok = c.fuente.token()
+    if tok is not None:
+        c.fuente.devolver(tok, delante=True)
+        c.fuente.devolver(_sintetico('NEWLINE', '\\n', tok), delante=True)
+    return None
+
+
+def _saltar_sentencia(c, desde=None, profundidad=0):
+    """Descarta el resto de la sentencia con error. Si esa línea abre un bloque
+    ('{' al final: for, if, switch...), descarta el bloque completo hasta su
+    '}' para no dejar llaves sin pareja (que causarían errores en cascada)."""
+    tok = desde if desde is not None else c.tok
+    if desde is not None and tok is not None and tok.type == 'LBRACE':
+        tok = c.fuente.token()
+    while tok is not None and tok.type != 'NEWLINE':
+        if tok.type == 'LBRACE':
+            profundidad += 1
+        elif tok.type == 'RBRACE':
+            profundidad -= 1
+        tok = c.fuente.token()
+        if tok is not None and tok.type == 'NEWLINE' and profundidad > 0:
+            tok = c.fuente.token()          # dentro del bloque: sigue
+    if tok is not None:
+        c.fuente.devolver(tok, delante=True)   # el NEWLINE cierra "error NEWLINE"
     return None
 # FIN aporte: Elkin Salazar
 
@@ -811,6 +949,7 @@ def p_error(tok):
     for manejador in (error_incompleto_oculto,   # César  (Y4 / Y6)
                       error_y5,                  # Fátima (Y5)
                       error_y4,                  # César  (Y4)
+                      error_for_parentesis,      # César  (Y2 / Y6 en el for)
                       error_y2,                  # César  (Y2)
                       error_y1,                  # Fátima (Y1)
                       error_y3_funcion,          # Elkin  (Y3)

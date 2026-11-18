@@ -1,0 +1,197 @@
+==============================================================================
+ANÁLISIS LÉXICO - Asistente Educativo de Errores para Go
+==============================================================================
+Desarrollador : Fátima Torres
+Archivo       : algoritmos/algoritmo3.go
+Fecha y hora  : 17-11-2026 23:04
+==============================================================================
+
+TOKENS RECONOCIDOS
+LÍNEA  COL.  TOKEN           LEXEMA
+------------------------------------------------------------------------------
+1      1     PACKAGE         package
+1      9     ID              main
+1      13    NEWLINE         \n
+3      1     IMPORT          import
+3      8     STRING_VALUE    "fmt"
+3      13    NEWLINE         \n
+6      1     CONST           const
+6      7     ID              PI
+6      10    ASSIGN          =
+6      12    FLOAT_VALUE     3.14159
+6      19    NEWLINE         \n
+7      1     CONST           const
+7      7     ID              SALUDO
+7      14    ASSIGN          =
+7      16    STRING_VALUE    "Calculadora basica"
+7      36    NEWLINE         \n
+9      1     VAR             var
+9      5     ID              llamadas
+9      14    TYPE_INT        int
+9      18    ASSIGN          =
+9      20    INTEGER_VALUE   0
+9      21    NEWLINE         \n
+10     1     VAR             var
+10     5     ID              precision
+10     15    TYPE_FLOAT64    float64
+10     23    ASSIGN          =
+10     25    FLOAT_VALUE     0.01
+10     29    NEWLINE         \n
+12     1     FUNC            func
+12     6     ID              factorial
+12     15    LPAREN          (
+12     16    ID              n
+12     18    TYPE_INT        int
+12     21    RPAREN          )
+12     23    TYPE_INT        int
+12     27    LBRACE          {
+13     2     IF              if
+13     5     ID              n
+13     7     LE              <=
+13     10    INTEGER_VALUE   1
+13     12    LBRACE          {
+14     3     RETURN          return
+14     10    INTEGER_VALUE   1
+14     11    NEWLINE         \n
+15     2     RBRACE          }
+15     3     NEWLINE         \n
+16     2     RETURN          return
+16     9     ID              n
+16     11    TIMES           *
+16     13    ID              factorial
+16     22    LPAREN          (
+16     23    ID              n
+16     24    MINUS           -
+16     25    INTEGER_VALUE   1
+16     26    RPAREN          )
+16     27    NEWLINE         \n
+17     1     RBRACE          }
+17     2     NEWLINE         \n
+19     1     FUNC            func
+19     6     ID              dividir
+19     13    LPAREN          (
+19     14    ID              a
+19     16    TYPE_INT        int
+19     19    COMMA           ,
+19     21    ID              b
+19     23    TYPE_INT        int
+19     26    RPAREN          )
+19     28    LPAREN          (
+19     29    TYPE_INT        int
+19     32    COMMA           ,
+19     34    TYPE_INT        int
+19     37    RPAREN          )
+19     39    LBRACE          {
+20     2     ID              b
+20     4     ASSIGN          =
+20     6     INTEGER_VALUE   0
+20     7     NEWLINE         \n
+22     2     RETURN          return
+22     9     ID              a
+22     11    DIVIDE          /
+22     13    ID              b
+22     14    COMMA           ,
+22     16    ID              a
+22     18    MOD             %
+22     20    ID              b
+22     21    NEWLINE         \n
+24     1     RBRACE          }
+24     2     NEWLINE         \n
+26     1     FUNC            func
+26     6     ID              main
+26     10    LPAREN          (
+26     11    RPAREN          )
+26     13    LBRACE          {
+28     2     ID              caracterInvalido
+28     19    DECLARE         :=
+28     22    INTEGER_VALUE   53
+28     25    NEWLINE         \n
+31     2     ID              cadenaRota
+31     13    DECLARE         :=
+31     16    STRING_VALUE    "Hola mundo"
+31     28    NEWLINE         \n
+34     2     VAR             var
+34     6     ID              edad
+34     11    TYPE_INT        int
+34     14    NEWLINE         \n
+37     2     ID              total
+37     8     DECLARE         :=
+37     11    INTEGER_VALUE   100
+37     15    NEWLINE         \n
+40     2     ID              PI
+40     5     ASSIGN          =
+40     7     FLOAT_VALUE     3.0
+40     11    NEWLINE         \n
+43     2     VAR             var
+43     6     ID              edadInt
+43     14    TYPE_INT        int
+43     18    ASSIGN          =
+43     20    STRING_VALUE    "veinte"
+43     29    NEWLINE         \n
+45     2     ID              edades
+45     9     DECLARE         :=
+45     12    LBRACKET        [
+45     13    RBRACKET        ]
+45     14    TYPE_FLOAT64    float64
+45     21    LBRACE          {
+45     22    FLOAT_VALUE     18.0
+45     26    COMMA           ,
+45     28    FLOAT_VALUE     21.5
+45     32    COMMA           ,
+45     34    FLOAT_VALUE     25.0
+45     38    COMMA           ,
+45     40    FLOAT_VALUE     30.5
+45     44    RBRACE          }
+45     45    NEWLINE         \n
+48     2     ID              moduloInvalido
+48     17    DECLARE         :=
+48     20    ID              edades
+48     26    LBRACKET        [
+48     27    INTEGER_VALUE   0
+48     28    RBRACKET        ]
+48     30    MOD             %
+48     32    INTEGER_VALUE   2
+48     34    NEWLINE         \n
+49     1     RBRACE          }
+49     2     NEWLINE         \n
+
+ERRORES LÉXICOS
+------------------------------------------------------------------------------
+(ninguno)
+
+RESUMEN
+------------------------------------------------------------------------------
+Total de tokens reconocidos : 145
+Tipos de token distintos    : 28
+Errores léxicos             : 0
+Resultado                   : SIN ERRORES
+
+Frecuencia por tipo de token:
+  ASSIGN          7
+  COMMA           6
+  CONST           2
+  DECLARE         5
+  DIVIDE          1
+  FLOAT_VALUE     7
+  FUNC            3
+  ID              29
+  IF              1
+  IMPORT          1
+  INTEGER_VALUE   9
+  LBRACE          5
+  LBRACKET        2
+  LE              1
+  LPAREN          5
+  MINUS           1
+  MOD             2
+  NEWLINE         22
+  PACKAGE         1
+  RBRACE          5
+  RBRACKET        2
+  RETURN          3
+  RPAREN          5
+  STRING_VALUE    4
+  TIMES           1
+  TYPE_FLOAT64    2
+  TYPE_INT        9
+  VAR             4

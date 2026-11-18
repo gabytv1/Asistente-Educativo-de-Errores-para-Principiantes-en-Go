@@ -1,0 +1,19 @@
+==============================================================================
+ANÁLISIS SINTÁCTICO - Asistente Educativo de Errores para Go
+==============================================================================
+Usuario Git   : gabytv1
+Archivo       : algoritmos/algoritmo3.go
+Fecha y hora  : 17-11-2026 22:56
+==============================================================================
+
+ERRORES SINTÁCTICOS
+------------------------------------------------------------------------------
+[Y1] Error sintáctico [línea 17]: falta '{' al final de la condición del if. Sugerencia: abre el bloque con '{' en la misma línea del if.
+[Y2] Error sintáctico [línea 30]: se esperaba ')' antes de '{' en el encabezado del for. Sugerencia: cierra el paréntesis o, mejor, quita los paréntesis: en Go se escribe for i := 0; i < 5; i++ { sin ellos.
+[Y5] Error sintáctico [línea 38]: 'else' debe ir en la misma línea que la llave de cierre del if. Sugerencia: escribe } else {.
+
+RESUMEN
+------------------------------------------------------------------------------
+Errores sintácticos : 3
+Errores léxicos     : 0
+Resultado           : CON ERRORES

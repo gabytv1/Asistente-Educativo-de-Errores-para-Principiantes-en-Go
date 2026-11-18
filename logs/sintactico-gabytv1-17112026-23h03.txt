@@ -1,0 +1,17 @@
+==============================================================================
+ANÁLISIS SINTÁCTICO - Asistente Educativo de Errores para Go
+==============================================================================
+Usuario Git   : gabytv1
+Archivo       : algoritmos/algoritmo3.go
+Fecha y hora  : 17-11-2026 23:03
+==============================================================================
+
+ERRORES SINTÁCTICOS
+------------------------------------------------------------------------------
+[Y6] Error sintáctico [línea 18]: token inesperado 'b': esta sentencia quedó fuera de una función. Sugerencia: probablemente sobra una '}' antes de esta línea y cerró la función antes de tiempo.
+
+RESUMEN
+------------------------------------------------------------------------------
+Errores sintácticos : 1
+Errores léxicos     : 0
+Resultado           : CON ERRORES

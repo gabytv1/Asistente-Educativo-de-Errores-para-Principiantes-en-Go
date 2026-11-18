@@ -1,0 +1,204 @@
+==============================================================================
+ANÁLISIS LÉXICO - Asistente Educativo de Errores para Go
+==============================================================================
+Desarrollador : Fátima Torres
+Archivo       : algoritmos/algoritmo3.go
+Fecha y hora  : 17-11-2026 22:56
+==============================================================================
+
+TOKENS RECONOCIDOS
+LÍNEA  COL.  TOKEN           LEXEMA
+------------------------------------------------------------------------------
+1      1     PACKAGE         package
+1      9     ID              main
+1      13    NEWLINE         \n
+3      1     IMPORT          import
+3      8     STRING_VALUE    "fmt"
+3      13    NEWLINE         \n
+6      1     CONST           const
+6      7     ID              MINIMO
+6      14    ASSIGN          =
+6      16    FLOAT_VALUE     60.0
+6      20    NEWLINE         \n
+7      1     CONST           const
+7      7     ID              MATERIA
+7      15    ASSIGN          =
+7      17    STRING_VALUE    "Lenguajes de Programacion"
+7      44    NEWLINE         \n
+9      1     VAR             var
+9      5     ID              aprobadas
+9      15    TYPE_INT        int
+9      19    ASSIGN          =
+9      21    INTEGER_VALUE   0
+9      22    NEWLINE         \n
+10     1     VAR             var
+10     5     ID              activo
+10     12    TYPE_BOOL       bool
+10     17    ASSIGN          =
+10     19    TRUE            true
+10     23    NEWLINE         \n
+12     1     FUNC            func
+12     6     ID              clasificar
+12     16    LPAREN          (
+12     17    ID              promedio
+12     26    TYPE_FLOAT64    float64
+12     33    RPAREN          )
+12     35    TYPE_STRING     string
+12     42    LBRACE          {
+13     2     IF              if
+13     5     ID              promedio
+13     14    GE              >=
+13     17    FLOAT_VALUE     90.0
+13     22    LBRACE          {
+14     3     RETURN          return
+14     10    STRING_VALUE    "Excelente"
+14     21    NEWLINE         \n
+15     2     RBRACE          }
+15     4     ELSE            else
+15     9     LBRACE          {
+17     3     IF              if
+17     6     ID              promedio
+17     15    GE              >=
+17     18    ID              MINIMO
+17     25    NEWLINE         \n
+18     3     LBRACE          {
+19     4     RETURN          return
+19     11    STRING_VALUE    "Aprobado"
+19     21    NEWLINE         \n
+20     3     RBRACE          }
+20     4     NEWLINE         \n
+21     2     RBRACE          }
+21     3     NEWLINE         \n
+22     2     RETURN          return
+22     9     STRING_VALUE    "Reprobado"
+22     20    NEWLINE         \n
+23     1     RBRACE          }
+23     2     NEWLINE         \n
+25     1     FUNC            func
+25     6     ID              main
+25     10    LPAREN          (
+25     11    RPAREN          )
+25     13    LBRACE          {
+26     2     ID              notas
+26     8     DECLARE         :=
+26     11    LBRACKET        [
+26     12    INTEGER_VALUE   5
+26     13    RBRACKET        ]
+26     14    TYPE_FLOAT64    float64
+26     21    LBRACE          {
+26     22    FLOAT_VALUE     85.5
+26     26    COMMA           ,
+26     28    FLOAT_VALUE     92.0
+26     32    COMMA           ,
+26     34    FLOAT_VALUE     70.0
+26     38    COMMA           ,
+26     40    FLOAT_VALUE     55.5
+26     44    COMMA           ,
+26     46    FLOAT_VALUE     99.0
+26     50    RBRACE          }
+26     51    NEWLINE         \n
+27     2     VAR             var
+27     6     ID              suma
+27     11    TYPE_FLOAT64    float64
+27     19    ASSIGN          =
+27     21    FLOAT_VALUE     0.0
+27     24    NEWLINE         \n
+30     2     FOR             for
+30     6     LPAREN          (
+30     7     ID              i
+30     9     DECLARE         :=
+30     12    INTEGER_VALUE   0
+30     13    SEMICOLON       ;
+30     15    ID              i
+30     17    LT              <
+30     19    INTEGER_VALUE   5
+30     20    SEMICOLON       ;
+30     22    ID              i
+30     23    INC             ++
+30     26    LBRACE          {
+31     3     ID              suma
+31     8     PLUS_ASSIGN     +=
+31     11    ID              notas
+31     16    LBRACKET        [
+31     17    ID              i
+31     18    RBRACKET        ]
+31     19    NEWLINE         \n
+32     2     RBRACE          }
+32     3     NEWLINE         \n
+35     2     IF              if
+35     5     ID              activo
+35     12    EQ              ==
+35     15    TRUE            true
+35     20    LBRACE          {
+36     3     FMT             fmt
+36     6     DOT             .
+36     7     PRINTLN         Println
+36     14    LPAREN          (
+36     15    STRING_VALUE    "Activo"
+36     23    RPAREN          )
+36     24    NEWLINE         \n
+37     2     RBRACE          }
+37     4     NEWLINE         \n
+38     2     ELSE            else
+38     7     LBRACE          {
+39     3     FMT             fmt
+39     6     DOT             .
+39     7     PRINTLN         Println
+39     14    LPAREN          (
+39     15    STRING_VALUE    "Inactivo"
+39     25    RPAREN          )
+39     26    NEWLINE         \n
+40     2     RBRACE          }
+40     3     NEWLINE         \n
+41     1     RBRACE          }
+41     2     NEWLINE         \n
+
+ERRORES LÉXICOS
+------------------------------------------------------------------------------
+(ninguno)
+
+RESUMEN
+------------------------------------------------------------------------------
+Total de tokens reconocidos : 143
+Tipos de token distintos    : 37
+Errores léxicos             : 0
+Resultado                   : SIN ERRORES
+
+Frecuencia por tipo de token:
+  ASSIGN          5
+  COMMA           4
+  CONST           2
+  DECLARE         2
+  DOT             2
+  ELSE            2
+  EQ              1
+  FLOAT_VALUE     8
+  FMT             2
+  FOR             1
+  FUNC            2
+  GE              2
+  ID              20
+  IF              3
+  IMPORT          1
+  INC             1
+  INTEGER_VALUE   4
+  LBRACE          9
+  LBRACKET        2
+  LPAREN          5
+  LT              1
+  NEWLINE         22
+  PACKAGE         1
+  PLUS_ASSIGN     1
+  PRINTLN         2
+  RBRACE          9
+  RBRACKET        2
+  RETURN          3
+  RPAREN          4
+  SEMICOLON       2
+  STRING_VALUE    7
+  TRUE            2
+  TYPE_BOOL       1
+  TYPE_FLOAT64    3
+  TYPE_INT        1
+  TYPE_STRING     1
+  VAR             3

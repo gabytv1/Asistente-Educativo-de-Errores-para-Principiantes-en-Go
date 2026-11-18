@@ -1,0 +1,26 @@
+==============================================================================
+ANÁLISIS SEMÁNTICO - Asistente Educativo de Errores para Go
+==============================================================================
+Usuario Git   : gabytv1
+Archivo       : algoritmos/algoritmo3.go
+Fecha y hora  : 17-11-2026 23:03
+==============================================================================
+
+ESTADO DE LOS ANÁLISIS PREVIOS
+------------------------------------------------------------------------------
+Análisis léxico     : sin errores
+Análisis sintáctico : 1 error(es)
+
+El análisis semántico NO se ejecutó: corrige primero los errores léxicos y sintácticos.
+[Y6] Error sintáctico [línea 18]: token inesperado 'b': esta sentencia quedó fuera de una función. Sugerencia: probablemente sobra una '}' antes de esta línea y cerró la función antes de tiempo.
+
+ERRORES SEMÁNTICOS
+------------------------------------------------------------------------------
+(no evaluados)
+
+RESUMEN
+------------------------------------------------------------------------------
+Errores léxicos     : 0
+Errores sintácticos : 1
+Errores semánticos  : 0
+Resultado           : NO EJECUTADO (hay errores léxicos o sintácticos)

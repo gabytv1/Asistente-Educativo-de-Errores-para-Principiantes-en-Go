@@ -1,0 +1,48 @@
+==============================================================================
+ANÁLISIS SEMÁNTICO - Asistente Educativo de Errores para Go
+==============================================================================
+Usuario Git   : gabytv1
+Archivo       : algoritmos/algoritmo3.go
+Fecha y hora  : 17-11-2026 23:01
+==============================================================================
+
+ESTADO DE LOS ANÁLISIS PREVIOS
+------------------------------------------------------------------------------
+Análisis léxico     : sin errores
+Análisis sintáctico : sin errores
+
+ERRORES SEMÁNTICOS
+------------------------------------------------------------------------------
+[S2] Error semántico [línea 38]: no se puede modificar la constante 'PI'. Sugerencia: usa una variable si el valor debe cambiar.
+[S3] Error semántico [línea 41]: no se puede asignar string a 'edadInt' de tipo int. Sugerencia: usa un valor entero.
+[S5] Error semántico [línea 46]: el operador '%' solo se aplica a enteros, pero recibió float64 y float64. Sugerencia: usa operandos de tipo int.
+
+TABLA DE SÍMBOLOS (nombre, tipo, constante, ámbito, línea)
+------------------------------------------------------------------------------
+  factorial      func(n int) int                      no         global                   12
+  dividir        func(a int, b int) (int, int)        no         global                   19
+  main           func()                               no         global                   24
+  PI             float64                              sí         global                   6
+  SALUDO         string                               sí         global                   7
+  llamadas       int                                  no         global                   9
+  precision      float64                              no         global                   10
+  n              int                                  no         función factorial        12
+  a              int                                  no         función dividir          19
+  b              int                                  no         función dividir          19
+  caracterInvalido int                                  no         función main             26
+  cadenaRota     string                               no         función main             29
+  edad           int                                  no         función main             32
+  total          int                                  no         función main             35
+  edadInt        int                                  no         función main             41
+  edades         []float64                            no         función main             43
+  moduloInvalido (desconocido)                        no         función main             46
+
+RESUMEN
+------------------------------------------------------------------------------
+Errores léxicos     : 0
+Errores sintácticos : 0
+Errores semánticos  : 3
+  S2 Constantes                 1
+  S3 Asignación de tipo         1
+  S5 Operaciones permitidas     1
+Resultado           : CON ERRORES SEMÁNTICOS

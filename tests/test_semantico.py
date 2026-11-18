@@ -541,3 +541,9 @@ class PruebasIntegral(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+class PruebasRevisionFinal(unittest.TestCase):
+    def test_declaracion_con_menos_valores_informa_la_linea_correcta(self):
+        errs = semantica(programa('a, b := 1\nfmt.Println(a, b)'))
+        self.assertEqual([(e['codigo'], e['linea']) for e in errs], [('S3', 6)])

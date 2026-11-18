@@ -92,10 +92,11 @@ def construir_log(usuario_git, ruta_archivo, ahora, ejecutado, errores,
     return '\n'.join(lineas) + '\n'
 
 
-def ejecutar(ruta_archivo, usuario_git, carpeta_logs=CARPETA_LOGS):
+def ejecutar(ruta_archivo, usuario_git, carpeta_logs=CARPETA_LOGS, codigo=None):
     """Devuelve (ruta_log, errores_sem, errores_sint, errores_lex, ejecutado, simbolos)."""
-    with open(ruta_archivo, encoding='utf-8') as f:
-        codigo = f.read()
+    if codigo is None:      # la interfaz gráfica pasa el texto del editor
+        with open(ruta_archivo, encoding='utf-8') as f:
+            codigo = f.read()
     arbol, errores_sint, errores_lex = AnalizadorSintactico().analizar(codigo)
     ejecutado = arbol is not None and not errores_lex and not errores_sint
     analizador = AnalizadorSemantico()

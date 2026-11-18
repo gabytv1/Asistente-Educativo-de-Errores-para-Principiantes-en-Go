@@ -66,9 +66,10 @@ def construir_log(usuario_git, ruta_archivo, ahora, arbol, errores, errores_lex)
     return '\n'.join(lineas) + '\n'
 
 
-def ejecutar(ruta_archivo, usuario_git, carpeta_logs=CARPETA_LOGS):
-    with open(ruta_archivo, encoding='utf-8') as f:
-        codigo = f.read()
+def ejecutar(ruta_archivo, usuario_git, carpeta_logs=CARPETA_LOGS, codigo=None):
+    if codigo is None:      # la interfaz gráfica pasa el texto del editor
+        with open(ruta_archivo, encoding='utf-8') as f:
+            codigo = f.read()
     arbol, errores, errores_lex = AnalizadorSintactico().analizar(codigo)
     ahora = datetime.now()
     os.makedirs(carpeta_logs, exist_ok=True)

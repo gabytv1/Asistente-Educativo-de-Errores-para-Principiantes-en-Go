@@ -1,0 +1,17 @@
+==============================================================================
+ANÁLISIS SINTÁCTICO - Asistente Educativo de Errores para Go
+==============================================================================
+Usuario Git   : gabytv1
+Archivo       : algoritmos/algoritmo3.go
+Fecha y hora  : 17-11-2026 22:59
+==============================================================================
+
+ERRORES SINTÁCTICOS
+------------------------------------------------------------------------------
+[Y1] Error sintáctico [línea 17]: falta '{' al final de la condición del if. Sugerencia: abre el bloque con '{' en la misma línea del if.
+
+RESUMEN
+------------------------------------------------------------------------------
+Errores sintácticos : 1
+Errores léxicos     : 0
+Resultado           : CON ERRORES

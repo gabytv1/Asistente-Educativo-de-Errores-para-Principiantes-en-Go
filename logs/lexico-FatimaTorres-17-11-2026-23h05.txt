@@ -1,0 +1,303 @@
+==============================================================================
+ANÁLISIS LÉXICO - Asistente Educativo de Errores para Go
+==============================================================================
+Desarrollador : Fátima Torres
+Archivo       : algoritmos/algoritmo3.go
+Fecha y hora  : 17-11-2026 23:05
+==============================================================================
+
+TOKENS RECONOCIDOS
+LÍNEA  COL.  TOKEN           LEXEMA
+------------------------------------------------------------------------------
+1      1     PACKAGE         package
+1      9     ID              main
+1      13    NEWLINE         \n
+3      1     IMPORT          import
+3      8     STRING_VALUE    "fmt"
+3      13    NEWLINE         \n
+6      1     CONST           const
+6      7     ID              MINIMO
+6      14    ASSIGN          =
+6      16    FLOAT_VALUE     60.0
+6      20    NEWLINE         \n
+7      1     CONST           const
+7      7     ID              MATERIA
+7      15    ASSIGN          =
+7      17    STRING_VALUE    "Lenguajes de Programacion"
+7      44    NEWLINE         \n
+9      1     VAR             var
+9      5     ID              aprobadas
+9      15    TYPE_INT        int
+9      19    ASSIGN          =
+9      21    INTEGER_VALUE   0
+9      22    NEWLINE         \n
+10     1     VAR             var
+10     5     ID              activo
+10     12    TYPE_BOOL       bool
+10     17    ASSIGN          =
+10     19    TRUE            true
+10     23    NEWLINE         \n
+11     1     VAR             var
+11     5     ID              ajuste
+11     12    TYPE_FLOAT64    float64
+11     19    NEWLINE         \n
+13     1     FUNC            func
+13     6     ID              clasificar
+13     16    LPAREN          (
+13     17    ID              promedio
+13     26    TYPE_FLOAT64    float64
+13     33    RPAREN          )
+13     35    TYPE_STRING     string
+13     42    LBRACE          {
+14     2     IF              if
+14     5     ID              promedio
+14     14    GE              >=
+14     17    FLOAT_VALUE     90.0
+14     22    LBRACE          {
+15     3     RETURN          return
+15     10    STRING_VALUE    "Excelente"
+15     21    NEWLINE         \n
+16     2     RBRACE          }
+16     4     ELSE            else
+16     9     LBRACE          {
+17     3     IF              if
+17     6     ID              promedio
+17     15    GE              >=
+17     18    ID              MINIMO
+17     25    AND             &&
+17     28    NOT             !
+17     29    LPAREN          (
+17     30    ID              promedio
+17     39    GT              >
+17     41    FLOAT_VALUE     100.0
+17     46    RPAREN          )
+17     48    LBRACE          {
+18     4     RETURN          return
+18     11    STRING_VALUE    "Aprobado"
+18     21    NEWLINE         \n
+19     3     RBRACE          }
+19     4     NEWLINE         \n
+20     2     RBRACE          }
+20     3     NEWLINE         \n
+22     2     RETURN          return
+22     9     INTEGER_VALUE   123
+22     13    NEWLINE         \n
+23     1     RBRACE          }
+23     2     NEWLINE         \n
+25     1     FUNC            func
+25     6     ID              main
+25     10    LPAREN          (
+25     11    RPAREN          )
+25     13    LBRACE          {
+27     2     ID              msgChar
+27     10    DECLARE         :=
+27     13    STRING_VALUE    "hola"
+27     19    NEWLINE         \n
+30     2     ID              malFormado
+30     13    DECLARE         :=
+30     16    INTEGER_VALUE   12
+30     19    NEWLINE         \n
+32     2     ID              notas
+32     8     DECLARE         :=
+32     11    LBRACKET        [
+32     12    INTEGER_VALUE   5
+32     13    RBRACKET        ]
+32     14    TYPE_FLOAT64    float64
+32     21    LBRACE          {
+32     22    FLOAT_VALUE     85.5
+32     26    COMMA           ,
+32     28    FLOAT_VALUE     92.0
+32     32    COMMA           ,
+32     34    FLOAT_VALUE     70.0
+32     38    COMMA           ,
+32     40    FLOAT_VALUE     55.5
+32     44    COMMA           ,
+32     46    FLOAT_VALUE     99.0
+32     50    RBRACE          }
+32     51    NEWLINE         \n
+33     2     VAR             var
+33     6     ID              suma
+33     11    TYPE_FLOAT64    float64
+33     19    ASSIGN          =
+33     21    FLOAT_VALUE     0.0
+33     24    NEWLINE         \n
+34     2     VAR             var
+34     6     ID              contador
+34     15    TYPE_INT        int
+34     18    NEWLINE         \n
+37     2     FOR             for
+37     6     ID              i
+37     8     DECLARE         :=
+37     11    INTEGER_VALUE   0
+37     12    SEMICOLON       ;
+37     14    ID              i
+37     16    LT              <
+37     18    INTEGER_VALUE   5
+37     19    SEMICOLON       ;
+37     21    ID              i
+37     22    INC             ++
+37     25    NEWLINE         \n
+38     2     LBRACE          {
+39     3     ID              suma
+39     8     PLUS_ASSIGN     +=
+39     11    ID              notas
+39     16    LBRACKET        [
+39     17    ID              i
+39     18    RBRACKET        ]
+39     19    NEWLINE         \n
+40     2     RBRACE          }
+40     3     NEWLINE         \n
+42     2     ID              promedio
+42     11    DECLARE         :=
+42     14    ID              suma
+42     19    DIVIDE          /
+42     21    FLOAT_VALUE     5.0
+42     24    NEWLINE         \n
+45     2     ID              MINIMO
+45     9     ASSIGN          =
+45     11    FLOAT_VALUE     50.0
+45     16    NEWLINE         \n
+48     2     ID              sumaTotal
+48     12    DECLARE         :=
+48     15    ID              totalEstudiantes
+48     32    PLUS            +
+48     34    INTEGER_VALUE   10
+48     37    NEWLINE         \n
+51     2     VAR             var
+51     6     ID              nInt
+51     11    TYPE_INT        int
+51     15    ASSIGN          =
+51     17    INTEGER_VALUE   5
+51     18    NEWLINE         \n
+52     2     ID              resultadoInvalido
+52     20    DECLARE         :=
+52     23    ID              promedio
+52     32    PLUS            +
+52     34    ID              nInt
+52     39    NEWLINE         \n
+54     2     ID              nivel
+54     8     DECLARE         :=
+54     11    INTEGER_VALUE   2
+54     12    NEWLINE         \n
+55     2     SWITCH          switch
+55     9     ID              nivel
+55     15    LBRACE          {
+56     2     CASE            case
+56     7     INTEGER_VALUE   1
+56     8     COLON           :
+57     3     FMT             fmt
+57     6     DOT             .
+57     7     PRINTLN         Println
+57     14    LPAREN          (
+57     15    STRING_VALUE    "Nivel basico"
+57     29    RPAREN          )
+57     30    NEWLINE         \n
+58     2     CASE            case
+58     7     INTEGER_VALUE   2
+58     8     COLON           :
+60     3     FMT             fmt
+60     6     DOT             .
+60     7     PRINTLN         Println
+60     14    LPAREN          (
+60     15    STRING_VALUE    "Nivel intermedio"
+60     33    NEWLINE         \n
+61     2     DEFAULT         default
+61     9     COLON           :
+62     3     FMT             fmt
+62     6     DOT             .
+62     7     PRINTLN         Println
+62     14    LPAREN          (
+62     15    STRING_VALUE    "Nivel avanzado"
+62     31    RPAREN          )
+62     32    NEWLINE         \n
+63     2     RBRACE          }
+63     3     NEWLINE         \n
+66     2     IF              if
+66     5     ID              activo
+66     12    NE              !=
+66     15    FALSE           false
+66     21    LBRACE          {
+67     3     FMT             fmt
+67     6     DOT             .
+67     7     PRINTLN         Println
+67     14    LPAREN          (
+67     15    STRING_VALUE    "Activo"
+67     23    RPAREN          )
+67     24    NEWLINE         \n
+68     2     RBRACE          }
+68     4     NEWLINE         \n
+69     2     ELSE            else
+69     7     LBRACE          {
+70     3     FMT             fmt
+70     6     DOT             .
+70     7     PRINTLN         Println
+70     14    LPAREN          (
+70     15    STRING_VALUE    "Inactivo"
+70     25    RPAREN          )
+70     26    NEWLINE         \n
+71     2     RBRACE          }
+71     3     NEWLINE         \n
+74     2     BREAK           break
+74     8     NEWLINE         \n
+75     1     RBRACE          }
+
+ERRORES LÉXICOS
+------------------------------------------------------------------------------
+(ninguno)
+
+RESUMEN
+------------------------------------------------------------------------------
+Total de tokens reconocidos : 231
+Tipos de token distintos    : 48
+Errores léxicos             : 0
+Resultado                   : SIN ERRORES
+
+Frecuencia por tipo de token:
+  AND             1
+  ASSIGN          7
+  BREAK           1
+  CASE            2
+  COLON           3
+  COMMA           4
+  CONST           2
+  DECLARE         8
+  DEFAULT         1
+  DIVIDE          1
+  DOT             5
+  ELSE            2
+  FALSE           1
+  FLOAT_VALUE     11
+  FMT             5
+  FOR             1
+  FUNC            2
+  GE              2
+  GT              1
+  ID              36
+  IF              3
+  IMPORT          1
+  INC             1
+  INTEGER_VALUE   11
+  LBRACE          10
+  LBRACKET        2
+  LPAREN          8
+  LT              1
+  NE              1
+  NEWLINE         36
+  NOT             1
+  PACKAGE         1
+  PLUS            2
+  PLUS_ASSIGN     1
+  PRINTLN         5
+  RBRACE          10
+  RBRACKET        2
+  RETURN          3
+  RPAREN          7
+  SEMICOLON       2
+  STRING_VALUE    10
+  SWITCH          1
+  TRUE            1
+  TYPE_BOOL       1
+  TYPE_FLOAT64    4
+  TYPE_INT        3
+  TYPE_STRING     1
+  VAR             6
